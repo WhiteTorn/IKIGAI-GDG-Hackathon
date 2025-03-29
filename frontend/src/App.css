@@ -1,0 +1,242 @@
+/* Basic Reset & Body */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f7f6;
+  color: #333;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* App Layout */
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.App-header {
+  background-color: #61dafb; /* React Blue */
+  padding: 20px;
+  color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.App-header h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.App-main {
+  flex-grow: 1;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto; /* Center content */
+  width: 90%; /* Responsive width */
+}
+
+.App-footer {
+  padding: 15px;
+  margin-top: 30px;
+  font-size: 0.8em;
+  color: #666;
+  border-top: 1px solid #eee;
+}
+
+/* Common Elements */
+button {
+  background-color: #61dafb;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+button:hover {
+  background-color: #4fa8d1;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+input[type="text"],
+textarea,
+select {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: left;
+}
+
+/* Form Specific */
+.form-component {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+}
+
+.radio-group label,
+.checkbox-group label {
+    font-weight: normal;
+    margin-right: 15px;
+    display: inline-block; /* Align radio/checkbox with label */
+}
+
+.radio-group input[type="radio"],
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+    vertical-align: middle; /* Align checkbox/radio vertically */
+}
+
+
+/* Path Selection */
+.path-selection-component h2,
+.interaction-component h2,
+.results-component h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.path-options {
+  list-style: none;
+  padding: 0;
+}
+
+.path-option {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  text-align: left;
+}
+
+.path-option:hover {
+  border-color: #61dafb;
+  box-shadow: 0 2px 5px rgba(97, 218, 251, 0.3);
+}
+
+.path-option h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #007bff; /* Link-like color */
+}
+
+.path-option p {
+  margin-bottom: 5px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.path-option span {
+    font-size: 0.8em;
+    color: #777;
+    display: block;
+    margin-top: 8px;
+}
+
+/* Interaction */
+.interaction-component {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.interaction-material {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  white-space: pre-wrap; /* Preserve whitespace and wrap text */
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; /* Monospace for code-like material */
+}
+
+.interaction-question {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Results */
+.results-component {
+    background-color: #e6ffed; /* Light green background */
+    border: 1px solid #b7e4c7;
+    padding: 25px;
+    border-radius: 8px;
+    color: #1d3557;
+}
+
+.results-component h2 {
+    color: #40916c; /* Darker green */
+}
+
+.results-summary {
+    margin-top: 15px;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+
+/* Loading and Error */
+.loading-indicator {
+  color: #007bff;
+  font-style: italic;
+  padding: 10px;
+}
+
+.error-message {
+  color: #dc3545; /* Bootstrap danger color */
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
