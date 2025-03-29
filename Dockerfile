@@ -13,7 +13,7 @@ COPY frontend/ ./
 # Set API URL for production build (relative path works well here)
 # This assumes your API routes are prefixed with /api in Flask
 ENV REACT_APP_API_URL=/api
-RUN npm run build
+RUN npx react-scripts build
 
 # --- Stage 2: Build Python Backend ---
 FROM python:3.9-slim
