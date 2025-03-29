@@ -1,19 +1,19 @@
 {
     "analysis": {
-        "learning_goal": "Python Basics",
+        "learning_goal": "Okay, now can you teach me how I should host this website? I am on GDG and I have 5$ free credits on the google given by GDG google, so can you help me to host ASAP this website on google cloud run? how? I have @Dockerfile is it enough? evaluate the project to actually host on the google cloud, I do not know anything.",
         "familiarity_level": "Beginner",
         "preferred_styles": [
             "Visual"
         ],
         "time_available_per_session": "Quick (5-15 mins)",
-        "specific_focus_notes": "I want to focus more on improving my OOP",
-        "immediate_achievement_goal": "OOP",
+        "specific_focus_notes": "Host on google cloud",
+        "immediate_achievement_goal": "Host on cloud",
         "desired_session_scope": "Quick Overview"
     },
-    "chosen_path": "Code Example Breakdown",
+    "chosen_path": "Cloud Run in 15: Visual Deployment",
     "current_interaction": {
-        "material": "Let's start with a simple concept in Object-Oriented Programming (OOP): **Classes**. Think of a class as a blueprint for creating objects. For example, a 'Dog' class would define what all dogs have in common: a name, a breed, and the ability to bark.  We can then create *individual* dog objects (like 'Buddy' or 'Bella') based on this 'Dog' blueprint.",
-        "question_for_user": "Imagine you're creating a 'Car' class. What are two attributes (characteristics) that *most* cars would have?",
+        "material": "Welcome to Cloud Run! Since you have a Dockerfile, you're already halfway there. Cloud Run takes Docker images and runs them for you without you managing any servers. Think of it like this: your Dockerfile is the recipe, the Docker image is the cake, and Cloud Run is the baker that serves it. First, you need to build your Docker image and push it to Google Container Registry (GCR). We'll build it in the cloud shell directly to save you setup. Just paste your dockerfile in the root directory of the Cloud Shell terminal to keep the build command simple!",
+        "question_for_user": "Great, we have already built the dockerfile. Now, open the cloud shell in the google cloud (the terminal available in the webpage). Can you copy and paste the dockerfile on the directory visible in the terminal? (Type 'pwd' on the Cloud Shell terminal to ensure you are in the right location and paste the Dockerfile in that directory.)",
         "session_finished": false
     }
 }

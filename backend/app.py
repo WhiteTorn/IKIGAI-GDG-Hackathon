@@ -10,7 +10,7 @@ import google.generativeai as genai
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__) # app = Flask(__name__, static_folder='frontend_build', static_url_path='')
 CORS(app)  # Enable CORS for all routes
 
 MEMORY_FILE = "memory.json"
