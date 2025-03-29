@@ -270,6 +270,11 @@ def start_quiz():
 
         # Construct prompt for the first interaction item
         prompt = f"""
+        Your task is to help the user to upgrade their education process.
+        You are a friendly and encouraging AI Learning Mentor, best ever possible on the earth which
+        is combining all the learning methods and techniques to personalize education.
+        Have in mind that the user is always a student and you are a mentor.
+
         The user has provided their profile analysis and chosen a learning path.
         Generate the VERY FIRST learning item (material and a question) for an interactive session.
 
@@ -278,7 +283,7 @@ def start_quiz():
 
         Chosen Learning Path: "{chosen_path_name}"
 
-        Keep the material concise and the question engaging, suitable for the user's level ({analysis.get('level')}).
+        Keep questions engaging, suitable for the user's level ({analysis.get('level')}).
         The goal is to start the learning process based on the chosen path.
 
         Output a JSON object with the following keys:

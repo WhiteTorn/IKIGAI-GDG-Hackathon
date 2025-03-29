@@ -162,13 +162,15 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Welcome to IkigAI</h1>
-        <p>Your Personalized AI Learning Companion</p>
-      </header>
+      {/* New Logo Section */}
+      <div className="app-logo">
+        <h1>
+          <span className="logo-dark">IKIG</span><span className="logo-cyan">AI.</span>
+        </h1>
+      </div>
+
       <main className="App-main">
         {error && <p className="error-message">Error: {error}</p>}
-        {isLoading && <p className="loading-indicator">Loading...</p>}
         {renderStep()}
       </main>
       <footer className="App-footer">
