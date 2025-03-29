@@ -21,39 +21,43 @@ function InteractionComponent({ interactionData, onSubmitAnswer, isLoading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmitAnswer(answer);
-    // Keep answer in textarea until next question loads or session ends
-    // setAnswer(''); // Clear answer field after submission if preferred
+    if (answer.trim() || question_for_user) { // Allow submitting even if question is null (e.g., initial step)
+        onSubmitAnswer(answer);
+        setAnswer(''); // Clear input after submit
+    }
   };
 
   return (
-    <div className="interaction-component">
-      <h2>Learning Interaction</h2>
+    <div className="interaction-container">
+      {isLoading && <div className="loading-overlay">Processing...</div>}
       {material && (
-        <div className="interaction-material">
-          <h3>Material:</h3>
-          <pre>{material}</pre> {/* Use pre for potential formatting */}
+        <div className="material-section">
+          <h3>Learning Material:</h3>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{material}</p>
         </div>
       )}
       {question_for_user && (
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="userAnswer" className="interaction-question">{question_for_user}</label>
+        <div className="question-section">
+          <h3>Question:</h3>
+          <p>{question_for_user}</p>
+          <form onSubmit={handleSubmit}>
             <textarea
-              id="userAnswer"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Your answer here..."
-              required
+              placeholder="Your answer..."
+              rows="4"
               disabled={isLoading}
             />
-          </div>
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Submitting...' : 'Submit Answer'}
-          </button>
-        </form>
+            <button type="submit" disabled={isLoading}>Submit Answer</button>
+          </form>
+        </div>
       )}
        {!question_for_user && !isLoading && <p>Waiting for next step...</p>}
+       {material && !question_for_user && (
+           <form onSubmit={handleSubmit}>
+                <button type="submit" disabled={isLoading}>Continue</button>
+           </form>
+       )}
     </div>
   );
 }

@@ -1,31 +1,30 @@
 {
     "form_data": {
-        "goal": "Understand python lists",
-        "familiarity": "Advanced",
+        "goal": "I want to learn Origami",
+        "familiarity": "Beginner",
         "styles": [
-            "Visual",
-            "Auditory"
+            "Kinesthetic (Hands-on)",
+            "Visual"
         ],
         "time_available": "Long (60+ mins)",
-        "specific_focus": "I do not know anything about the topic"
+        "specific_focus": "I Learned it very long time ago, so please make me to remember it."
     },
     "analysis": {
-        "goal": "Understand python lists",
-        "level": "Advanced",
+        "goal": "Origami",
+        "level": "Beginner",
         "preferred_styles": [
-            "Visual",
-            "Auditory"
+            "Kinesthetic (Hands-on)",
+            "Visual"
         ],
         "session_duration_category": "Long (60+ mins)",
-        "specific_focus": "I do not know anything about the topic",
-        "user_summary": "The user is an advanced learner aiming to understand Python lists. They prefer visual and auditory learning styles and have a long session duration available (60+ mins). Despite their advanced level, they indicate a lack of prior knowledge about the specific topic of Python lists, suggesting they are either overestimating their general Python knowledge or misunderstanding the complexity of lists."
+        "specific_focus": "I Learned it very long time ago, so please make me to remember it.",
+        "user_summary": "The user is a beginner in Origami and prefers kinesthetic (hands-on) and visual learning styles. They have a long time available (60+ mins) for learning and want to refresh their memory as they learned it a long time ago."
     },
-    "chosen_path": "Python Lists: From Novice to Advanced",
+    "chosen_path": "Beginner's Guided Origami Adventure",
     "current_interaction": {
-        "material": null,
-        "question_for_user": null,
-        "session_finished": true,
-        "summary": "Thanks for participating in this session! While we didn't get to fully explore list comprehensions, I appreciate you taking the time to engage. We'll conclude for now."
-    },
-    "final_summary": "Thanks for participating in this session! While we didn't get to fully explore list comprehensions, I appreciate you taking the time to engage. We'll conclude for now."
+        "material": "Of course! Let's visualize it. Imagine the square in front of you. The easiest way to create a valley fold that divides it in half is to bring two *opposite* corners together. Think of folding a napkin in half to make a triangle. The crease that runs from one corner to the other is your valley fold. See how it forms a 'V' shape pointing downwards?",
+        "question_for_user": "Now, can you tell me which corners you would bring together to make that fold and create a triangle? Let's say the corners are named A, B, C, and D, going clockwise around the square.",
+        "session_finished": false,
+        "summary": null
+    }
 }
