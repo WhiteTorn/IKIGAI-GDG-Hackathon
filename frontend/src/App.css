@@ -375,3 +375,130 @@ label {
     z-index: 10; /* Ensure it's on top */
     border-radius: 12px; /* Match container */
 }
+
+/* Results Component Styling Enhancements */
+.results-component.game-profile { /* Target the new class */
+    background: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%); /* Subtle gradient background */
+    padding: 30px 40px;
+    border-radius: 16px; /* More rounded */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    margin-top: 20px; /* Add some top margin */
+}
+
+.results-component.game-profile h2 {
+    color: #4a5568; /* Dark grey, less intense than green */
+    margin-top: 0;
+    margin-bottom: 10px; /* Reduced margin */
+    font-size: 2.0em; /* Larger title */
+    font-weight: 700; /* Bolder */
+    letter-spacing: 1px; /* Add some spacing */
+}
+.results-component.game-profile h3 { /* Style for topic subtitle */
+    color: #718096; /* Lighter grey */
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+
+/* Container for the structured summary parts */
+.results-summary-structured {
+    margin-bottom: 35px;
+    text-align: left;
+    display: grid; /* Use grid for layout */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Gap between sections */
+}
+
+.summary-section {
+    background-color: #ffffff; /* White background for cards */
+    /* border-left: 4px solid #4facfe; */ /* Remove side border */
+    border: 1px solid #e2e8f0; /* Add full border */
+    padding: 20px 25px; /* Adjust padding */
+    margin-bottom: 0; /* Remove margin as grid gap handles spacing */
+    border-radius: 10px; /* Rounded corners for cards */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for cards */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.summary-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+.summary-section h4 {
+    margin-top: 0;
+    margin-bottom: 12px; /* More space below title */
+    color: #2b6cb0; /* Theme blue for titles */
+    font-size: 1.2em; /* Slightly larger title */
+    font-weight: 600;
+    display: flex; /* Align emoji and text */
+    align-items: center;
+    gap: 8px; /* Space between emoji and text */
+}
+
+.summary-section p {
+    margin-bottom: 0;
+    color: #4a5568;
+    line-height: 1.6;
+    font-size: 0.95em; /* Slightly smaller text */
+}
+
+/* Styling for the action buttons area */
+.results-actions {
+    margin-top: 40px; /* More space above actions */
+    padding-top: 25px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.results-actions h3 {
+    margin-bottom: 20px;
+    color: #4a5568; /* Match profile title color */
+    font-size: 1.4em; /* Larger action title */
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.action-buttons button {
+    min-width: 240px; /* Wider buttons */
+    font-weight: 600;
+    padding: 14px 28px; /* Adjust padding */
+    font-size: 1.05em; /* Slightly larger button text */
+    display: flex; /* Align icon and text */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between icon and text */
+}
+
+/* Specific button styles (using existing classes) */
+.continue-button {
+   background-color: #48bb78; /* Green for continue */
+   border: 1px solid #38a169;
+}
+.continue-button:hover:not(:disabled) {
+   background-color: #38a169;
+   box-shadow: 0 4px 10px rgba(72, 187, 120, 0.3); /* Green shadow */
+}
+
+.restart-button {
+   background-color: #4299e1; /* Blue for explore */
+   border: 1px solid #3182ce;
+}
+.restart-button:hover:not(:disabled) {
+   background-color: #3182ce;
+    box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3); /* Blue shadow */
+}
+
+
+/* Remove old results summary style if not needed elsewhere */
+/*
+.results-summary { ... }
+*/

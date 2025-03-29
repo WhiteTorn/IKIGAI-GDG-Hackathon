@@ -1,13 +1,13 @@
 import React from 'react';
 
-// Helper function to render summary sections safely
-const renderSummarySection = (title, content) => {
+// Helper function to render summary sections safely with emojis
+const renderSummarySection = (title, content, emoji) => {
     if (!content || typeof content !== 'string' || content.trim() === '' || content.toLowerCase() === 'n/a') {
         return null; // Don't render empty/invalid sections
     }
     return (
         <div className="summary-section">
-            <h4>{title}</h4>
+            <h4>{emoji} {title}</h4>
             <p>{content}</p>
         </div>
     );
@@ -18,17 +18,20 @@ function ResultsComponent({ summary, topicName, onRestart, onContinue, isLoading
 
   // Default structure in case summary is null or not an object
   const defaultSummary = {
-      recap: "You've reached the end of this learning block.",
-      strengths: "",
-      areas_for_improvement: "",
-      next_step_suggestion: "",
-      motivation: "Great effort!"
+      recap: "You've completed this learning block! Let's see how you did.", // More engaging default
+      strengths: "Every step forward is progress!",
+      areas_for_improvement: "Identifying areas to grow is key to mastery.",
+      next_step_suggestion: "Ready for the next challenge?",
+      motivation: "Keep up the fantastic effort! 🔥" // Added default emoji
   };
 
   // Use summary if it's a valid object, otherwise use default or simple string
   let displaySummary;
   if (summary && typeof summary === 'object' && summary !== null) {
-      displaySummary = { ...defaultSummary, ...summary }; // Merge with default to ensure all keys exist
+      // Ensure all keys exist by merging with default, prioritizing received summary
+      displaySummary = { ...defaultSummary, ...summary };
+      // Add default emojis if not provided by AI (though AI prompt doesn't ask for them)
+      displaySummary.motivation = displaySummary.motivation || defaultSummary.motivation;
   } else if (typeof summary === 'string' && summary.trim() !== '') {
        displaySummary = { ...defaultSummary, recap: summary }; // Use string as recap
   }
@@ -38,25 +41,28 @@ function ResultsComponent({ summary, topicName, onRestart, onContinue, isLoading
 
 
   return (
-    <div className="results-component">
-      <h2>Session Debrief: {topicName || 'Learning Topic'}</h2>
+    <div className="results-component game-profile"> {/* Added 'game-profile' class */}
+      <h2>🏆 Session Complete! 🏆</h2>
+      <h3>Topic: {topicName || 'Learning Adventure'}</h3>
 
       <div className="results-summary-structured">
-        {renderSummarySection("Session Recap", displaySummary.recap)}
-        {renderSummarySection("You Did Well On", displaySummary.strengths)}
-        {renderSummarySection("Keep Practicing", displaySummary.areas_for_improvement)}
-        {renderSummarySection("Next Steps Suggestion", displaySummary.next_step_suggestion)}
-        {renderSummarySection("Keep Going!", displaySummary.motivation)}
+        {/* Pass emojis and potentially adjusted titles */}
+        {renderSummarySection("Mission Recap", displaySummary.recap, "📝")}
+        {renderSummarySection("Your Strengths", displaySummary.strengths, "💪")}
+        {renderSummarySection("Level Up Areas", displaySummary.areas_for_improvement, "🌱")}
+        {renderSummarySection("Next Quest", displaySummary.next_step_suggestion, "🚀")}
+        {renderSummarySection("Keep Going!", displaySummary.motivation, "🌟")}
       </div>
 
       <div className="results-actions">
-         <h3>What's Next?</h3>
+         <h3>Choose Your Next Move:</h3>
          <div className="action-buttons">
+            {/* Added emojis to buttons */}
             <button onClick={onContinue} disabled={isLoading} className="continue-button">
-              {isLoading ? 'Loading...' : `Continue Learning: ${topicName || 'This Topic'}`}
+              {isLoading ? 'Loading...' : `▶️ Continue: ${topicName || 'This Topic'}`}
             </button>
             <button onClick={onRestart} disabled={isLoading} className="restart-button">
-              {isLoading ? 'Loading...' : 'Explore a New Topic'}
+              {isLoading ? 'Loading...' : '🗺️ Explore New Topic'}
             </button>
          </div>
       </div>
