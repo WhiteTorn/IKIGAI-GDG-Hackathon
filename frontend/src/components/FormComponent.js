@@ -50,8 +50,8 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
       goal,
       familiarity,
       styles,
-      time_available: timeAvailable, // Match backend expected key
-      specific_focus: specificFocus || null, // Send null if empty
+      timeAvailable: timeAvailable,
+      specificFocus: specificFocus || null,
       achieveGoal,
       sessionScope
     });

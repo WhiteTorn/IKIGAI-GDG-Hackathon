@@ -117,67 +117,79 @@ def call_gemini_api(prompt):
 
 @app.route('/api/analyze_form', methods=['POST'])
 def analyze_form():
-    """Agent 1: Analyzes the user's profile form."""
+    """Agent 1: Analyzes the initial user form and stores analysis."""
     try:
-        form_data = request.get_json()
-        if not form_data:
-            return jsonify({"status": "error", "message": "No form data received."}), 400
+        data = request.get_json()
+        print("Received form data:", data) # Debugging: Print received data
+
+        # --- Extract all fields from the request ---
+        goal = data.get('goal')
+        familiarity = data.get('familiarity')
+        styles = data.get('styles')
+        time_available = data.get('timeAvailable') # Frontend sends camelCase
+        specific_focus = data.get('specificFocus')
+        achieve_goal = data.get('achieveGoal') # Frontend sends camelCase
+        session_scope = data.get('sessionScope') # Frontend sends camelCase
 
         # Basic validation (can be expanded)
-        required_fields = ['goal', 'familiarity', 'styles', 'time_available']
-        if not all(field in form_data for field in required_fields):
-             return jsonify({"status": "error", "message": "Missing required form fields."}), 400
+        if not all([goal, familiarity, styles, time_available, achieve_goal, session_scope]):
+             # Check if styles is an empty list, which is valid if user selected none (though form requires one)
+             if not styles and isinstance(styles, list):
+                 pass # Allow empty list for styles if validation changes later
+             else:
+                print("Validation failed. Missing fields:", {
+                    "goal": goal, "familiarity": familiarity, "styles": styles,
+                    "timeAvailable": time_available, "achieveGoal": achieve_goal,
+                    "sessionScope": session_scope
+                })
+                # Be more specific about missing fields in the error message
+                missing = [k for k, v in {
+                    "goal": goal, "familiarity": familiarity, "styles": styles,
+                    "timeAvailable": time_available, "achieveGoal": achieve_goal,
+                    "sessionScope": session_scope
+                }.items() if not v and not (k == 'styles' and isinstance(v, list))] # Check for falsy values, except empty list for styles
+                return jsonify({"status": "error", "message": f"Missing required form fields: {', '.join(missing)}"}), 400
 
+
+        # --- Construct the analysis object ---
+        # This is the object that will be stored in memory
+        analysis = {
+            "learning_goal": goal,
+            "familiarity_level": familiarity,
+            "preferred_styles": styles,
+            "time_available_per_session": time_available,
+            "specific_focus_notes": specific_focus or "None", # Handle optional field
+            "immediate_achievement_goal": achieve_goal, # Store the new field
+            "desired_session_scope": session_scope # Store the new field
+        }
+
+        # --- AI Call (Optional for this step, but could be used for deeper analysis) ---
+        # For the MVP, we might just store the structured data directly.
+        # If you wanted AI analysis *of* the form itself:
+        # prompt = f"Analyze this user profile for learning: {json.dumps(analysis, indent=2)}"
+        # ai_analysis_summary = call_gemini_api(prompt)
+        # analysis['ai_summary'] = ai_analysis_summary # Add AI's take
+
+        # --- Store analysis in memory ---
         memory = read_memory()
-        memory['form_data'] = form_data # Store raw form data
+        memory['analysis'] = analysis
+        # Clear previous path/interaction if starting fresh
+        memory.pop('chosen_path', None)
+        memory.pop('current_interaction', None)
+        memory.pop('final_summary', None)
         write_memory(memory)
 
-        # Construct prompt for AI analysis
-        prompt = f"""
-        Analyze the input user profile data and generate a structured summary.
-        Input Data:
-        Learning Goal: {form_data.get('goal')}
-        Current Familiarity: {form_data.get('familiarity')}
-        Preferred Learning Styles: {', '.join(form_data.get('styles', []))}
-        Available Time: {form_data.get('time_available')}
-        Specific Focus (Optional): {form_data.get('specific_focus', 'None')}
+        print("Analysis stored:", analysis) # Debugging: Print stored analysis
 
-        Output a JSON object with the following keys:
-        - goal: The user's learning goal.
-        - level: The user's familiarity level.
-        - preferred_styles: A list of the user's preferred learning styles.
-        - session_duration_category: The user's available time category.
-        - specific_focus: The user's specific focus, or null if not provided.
-        - user_summary: A brief natural language summary of the user's profile.
-        """
-
-        simulated_response_str = call_gemini_api(prompt)
-        # --- EDIT: Added error check for API call failure ---
-        try:
-            # Attempt to parse the response from call_gemini_api
-            analysis_dict = json.loads(simulated_response_str)
-            # Check if the AI returned an error structure itself
-            if isinstance(analysis_dict, dict) and analysis_dict.get("status") == "error":
-                 print(f"AI API returned an error: {analysis_dict.get('message')}")
-                 # Propagate the error message from the AI call
-                 return jsonify({"status": "error", "message": analysis_dict.get('message', 'AI processing error')}), 500
-        except json.JSONDecodeError:
-            print(f"Error decoding AI JSON response for analyze_form. Raw response: {simulated_response_str}")
-            return jsonify({"status": "error", "message": "Failed to parse AI response (analyze_form)."}), 500
-        # --- End EDIT ---
-
-        # Store the analysis result
-        memory = read_memory() # Re-read memory in case it changed
-        memory['analysis'] = analysis_dict
-        write_memory(memory)
-
-        return jsonify({"status": "success", "message": "Form analyzed.", "analysis": analysis_dict})
+        return jsonify({"status": "success", "message": "Form analyzed successfully."})
 
     except json.JSONDecodeError:
         return jsonify({"status": "error", "message": "Invalid JSON data received."}), 400
     except Exception as e:
         print(f"Error in /api/analyze_form: {e}")
-        return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({"status": "error", "message": "An internal server error occurred during form analysis."}), 500
 
 @app.route('/api/get_learning_paths', methods=['GET'])
 def get_learning_paths():

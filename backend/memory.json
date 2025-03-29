@@ -1,30 +1,19 @@
 {
-    "form_data": {
-        "goal": "I want to make myself better, I want to make gym at the home",
-        "familiarity": "Beginner",
-        "styles": [
-            "Auditory"
-        ],
-        "time_available": "Medium (15-30 mins)",
-        "specific_focus": "Muhehehehe",
-        "achieveGoal": "SDfasera",
-        "sessionScope": "Quick Overview"
-    },
     "analysis": {
-        "goal": "I want to make myself better, I want to make gym at the home",
-        "level": "Beginner",
+        "learning_goal": "Python Basics",
+        "familiarity_level": "Beginner",
         "preferred_styles": [
-            "Auditory"
+            "Visual"
         ],
-        "session_duration_category": "Medium (15-30 mins)",
-        "specific_focus": "Muhehehehe",
-        "user_summary": "This user is a beginner who wants to improve themselves and create a home gym. They prefer auditory learning and have a medium amount of time available for learning sessions (15-30 minutes). Their specific focus is \"Muhehehehe\"."
+        "time_available_per_session": "Quick (5-15 mins)",
+        "specific_focus_notes": "I want to focus more on improving my OOP",
+        "immediate_achievement_goal": "OOP",
+        "desired_session_scope": "Quick Overview"
     },
-    "chosen_path": "Home Gym Essentials: Audio Guide",
+    "chosen_path": "Code Example Breakdown",
     "current_interaction": {
-        "material": "Okay, so you're setting up a home gym! Fantastic! Let's talk about the first essential: flooring. You need something that will protect your existing floors, absorb impact, and provide a stable surface. Think about rubber flooring rolls, interlocking rubber tiles, or even thick foam mats. Each has pros and cons regarding price, durability, and ease of installation. For example, rubber rolls are great for covering a large area, but can be difficult to maneuver and cut. Tiles are easier to install but might be more expensive. Foam mats are cheap and portable but less durable.",
-        "question_for_user": "Considering your space and budget, what kind of flooring option sounds most appealing to you for your home gym: rubber rolls, interlocking rubber tiles, or foam mats? Tell me *why* you're leaning that way!",
-        "session_finished": false,
-        "summary": null
+        "material": "Let's start with a simple concept in Object-Oriented Programming (OOP): **Classes**. Think of a class as a blueprint for creating objects. For example, a 'Dog' class would define what all dogs have in common: a name, a breed, and the ability to bark.  We can then create *individual* dog objects (like 'Buddy' or 'Bella') based on this 'Dog' blueprint.",
+        "question_for_user": "Imagine you're creating a 'Car' class. What are two attributes (characteristics) that *most* cars would have?",
+        "session_finished": false
     }
 }
