@@ -1,21 +1,35 @@
 import React, { useState, useEffect } from 'react';
 
-function FormComponent({ onSubmit, isLoading, initialData }) {
-  const [goal, setGoal] = useState('');
-  const [familiarity, setFamiliarity] = useState(''); // e.g., 'Beginner', 'Intermediate', 'Advanced'
-  const [styles, setStyles] = useState([]); // e.g., ['Visual', 'Auditory', 'Reading/Writing', 'Kinesthetic']
-  const [timeAvailable, setTimeAvailable] = useState(''); // e.g., 'Short (15-30 mins)', 'Medium (30-60 mins)', 'Long (60+ mins)'
-  const [specificFocus, setSpecificFocus] = useState('');
+// Assuming learningStylesOptions and timeOptions are defined elsewhere or passed as props
+const learningStylesOptions = [
+    "Visual", "Auditory", "Kinesthetic (Hands-on)", "Reading/Writing"
+];
+const timeOptions = ["Quick (5-15 mins)", "Medium (15-30 mins)", "Long (30-60 mins)", "Extended (60+ mins)"];
 
-  // Pre-fill form if initialData is provided (e.g., on restart)
+
+function FormComponent({ onSubmit, isLoading, initialData }) {
+  const [goal, setGoal] = useState(initialData?.goal || '');
+  const [familiarity, setFamiliarity] = useState(initialData?.familiarity || 'Beginner');
+  const [styles, setStyles] = useState(initialData?.styles || []);
+  const [timeAvailable, setTimeAvailable] = useState(initialData?.timeAvailable || '');
+  const [specificFocus, setSpecificFocus] = useState(initialData?.specificFocus || '');
+  // --- New State for Added Questions ---
+  const [achieveGoal, setAchieveGoal] = useState(initialData?.achieveGoal || '');
+  const [sessionScope, setSessionScope] = useState(initialData?.sessionScope || ''); // 'Deep Dive' or 'Quick Overview'
+
+
+  // Pre-fill form if initialData exists (e.g., on restart)
   useEffect(() => {
-    if (initialData) {
-      setGoal(initialData.goal || '');
-      setFamiliarity(initialData.familiarity || '');
-      setStyles(initialData.styles || []);
-      setTimeAvailable(initialData.time_available || '');
-      setSpecificFocus(initialData.specific_focus || '');
-    }
+      if (initialData) {
+          setGoal(initialData.goal || '');
+          setFamiliarity(initialData.familiarity || 'Beginner');
+          setStyles(initialData.styles || []);
+          setTimeAvailable(initialData.timeAvailable || '');
+          setSpecificFocus(initialData.specificFocus || '');
+          // --- Pre-fill new fields ---
+          setAchieveGoal(initialData.achieveGoal || '');
+          setSessionScope(initialData.sessionScope || '');
+      }
   }, [initialData]);
 
 
@@ -28,8 +42,8 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!goal || !familiarity || styles.length === 0 || !timeAvailable) {
-        alert("Please fill in all required fields (Goal, Familiarity, Styles, Time).");
+    if (!goal || !familiarity || styles.length === 0 || !timeAvailable || !sessionScope) {
+        alert("Please fill in all required fields (Goal, Familiarity, Styles, Time, Session Scope).");
         return;
     }
     onSubmit({
@@ -37,33 +51,44 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
       familiarity,
       styles,
       time_available: timeAvailable, // Match backend expected key
-      specific_focus: specificFocus || null // Send null if empty
+      specific_focus: specificFocus || null, // Send null if empty
+      achieveGoal,
+      sessionScope
     });
   };
 
-  const learningStylesOptions = ['Visual', 'Auditory', 'Reading/Writing', 'Kinesthetic (Hands-on)'];
-  const timeOptions = ['Short (15-30 mins)', 'Medium (30-60 mins)', 'Long (60+ mins)'];
   const familiarityOptions = ['Beginner', 'Intermediate', 'Advanced'];
 
   return (
-    <form onSubmit={handleSubmit} className="form-component">
-      <h2>Your Learning Profile</h2>
-      <p>Tell us about your learning preferences to personalize your session.</p>
+    <form onSubmit={handleSubmit} className="learning-form">
+      <h2>Tell Us About Your Learning Goals</h2>
 
       <div className="form-group">
-        <label htmlFor="goal">What is your main learning goal for this session? *</label>
+        <label htmlFor="goal">What topic do you want to learn or practice today? *</label>
         <input
           type="text"
           id="goal"
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
+          placeholder="e.g., Python basics, Origami Crane, CSS Flexbox"
           required
-          placeholder="e.g., Understand Python lists, Learn basic CSS selectors"
         />
       </div>
 
-      <div className="form-group radio-group">
-        <label>How familiar are you with this topic? *</label>
+       {/* --- New Question 1 --- */}
+       <div className="form-group">
+        <label htmlFor="achieveGoal">What's one specific thing you hope to achieve with this topic?</label>
+        <input
+          type="text"
+          id="achieveGoal"
+          value={achieveGoal}
+          onChange={(e) => setAchieveGoal(e.target.value)}
+          placeholder="e.g., Understand loops, Fold my first model, Center a div"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="familiarity">How familiar are you with this topic? *</label>
         {familiarityOptions.map(option => (
           <label key={option}>
             <input
@@ -78,8 +103,8 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
         ))}
       </div>
 
-      <div className="form-group checkbox-group">
-        <label>Preferred Learning Styles (select at least one): *</label>
+      <div className="form-group">
+        <label>Preferred Learning Style(s) * (Choose at least one)</label>
         {learningStylesOptions.map(style => (
           <label key={style}>
             <input
@@ -93,7 +118,7 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
       </div>
 
       <div className="form-group">
-        <label htmlFor="timeAvailable">How much time do you have? *</label>
+        <label htmlFor="timeAvailable">How much time do you have for this session? *</label>
         <select
           id="timeAvailable"
           value={timeAvailable}
@@ -107,8 +132,35 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
         </select>
       </div>
 
+       {/* --- New Question 2 --- */}
+       <div className="form-group">
+        <label>How deep do you want to go right now? *</label>
+        <div className="radio-group">
+            <label className="radio-label">
+                <input
+                    type="radio"
+                    name="sessionScope"
+                    value="Quick Overview"
+                    checked={sessionScope === 'Quick Overview'}
+                    onChange={(e) => setSessionScope(e.target.value)}
+                    required
+                /> Quick Overview
+            </label>
+            <label className="radio-label">
+                <input
+                    type="radio"
+                    name="sessionScope"
+                    value="Deep Dive"
+                    checked={sessionScope === 'Deep Dive'}
+                    onChange={(e) => setSessionScope(e.target.value)}
+                    required
+                /> Deeper Dive
+            </label>
+        </div>
+       </div>
+
       <div className="form-group">
-        <label htmlFor="specificFocus">Any specific area or concept you want to focus on? (Optional)</label>
+        <label htmlFor="specificFocus">Any other details or specific focus? (Optional)</label>
         <input
           type="text"
           id="specificFocus"
@@ -118,8 +170,8 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
         />
       </div>
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Analyzing...' : 'Find Learning Paths'}
+      <button type="submit" disabled={isLoading} className="submit-button">
+        {isLoading ? 'Analyzing...' : 'Find My Learning Path!'}
       </button>
     </form>
   );

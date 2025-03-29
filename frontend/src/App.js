@@ -74,7 +74,7 @@ function App() {
          setError(error || 'Failed to fetch learning paths after submitting form.');
       }
     }
-  }, [handleApiCall, error]); // Add error to dependency array if needed
+  }, [handleApiCall, error]);
 
   const handlePathSelection = useCallback(async (pathName) => {
     const data = await handleApiCall('/start_quiz', 'POST', { chosen_path_name: pathName });
@@ -130,7 +130,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>AI Learning Assistant MVP</h1>
+        <h1>Welcome to IkigAI</h1>
+        <p>Your Personalized AI Learning Companion</p>
       </header>
       <main className="App-main">
         {error && <p className="error-message">Error: {error}</p>}
@@ -138,7 +139,7 @@ function App() {
         {renderStep()}
       </main>
       <footer className="App-footer">
-        <p>GDG EdTech Hackathon Project</p>
+        <p>&copy; 2024 IkigAI - Hackathon Project</p>
       </footer>
     </div>
   );

@@ -1,29 +1,31 @@
 {
     "form_data": {
-        "goal": "I want to learn Origami",
+        "goal": "Origami Creation",
         "familiarity": "Beginner",
         "styles": [
-            "Kinesthetic (Hands-on)",
-            "Visual"
+            "Visual",
+            "Auditory"
         ],
-        "time_available": "Long (60+ mins)",
-        "specific_focus": "I Learned it very long time ago, so please make me to remember it."
+        "time_available": "Quick (5-15 mins)",
+        "specific_focus": null,
+        "achieveGoal": "I want to learn how to create actual swan origami,",
+        "sessionScope": "Quick Overview"
     },
     "analysis": {
-        "goal": "Origami",
+        "goal": "Origami Creation",
         "level": "Beginner",
         "preferred_styles": [
-            "Kinesthetic (Hands-on)",
-            "Visual"
+            "Visual",
+            "Auditory"
         ],
-        "session_duration_category": "Long (60+ mins)",
-        "specific_focus": "I Learned it very long time ago, so please make me to remember it.",
-        "user_summary": "The user is a beginner in Origami and prefers kinesthetic (hands-on) and visual learning styles. They have a long time available (60+ mins) for learning and want to refresh their memory as they learned it a long time ago."
+        "session_duration_category": "Quick (5-15 mins)",
+        "specific_focus": null,
+        "user_summary": "The user is a beginner who wants to learn origami and prefers visual and auditory learning styles. They are looking for quick sessions lasting 5-15 minutes and have no specific focus area within origami at this time."
     },
-    "chosen_path": "Beginner's Guided Origami Adventure",
+    "chosen_path": "Beginner Origami: Flapping Bird Preview",
     "current_interaction": {
-        "material": "Of course! Let's visualize it. Imagine the square in front of you. The easiest way to create a valley fold that divides it in half is to bring two *opposite* corners together. Think of folding a napkin in half to make a triangle. The crease that runs from one corner to the other is your valley fold. See how it forms a 'V' shape pointing downwards?",
-        "question_for_user": "Now, can you tell me which corners you would bring together to make that fold and create a triangle? Let's say the corners are named A, B, C, and D, going clockwise around the square.",
+        "material": "Actually, a valley fold makes a crease that looks like a valley, going downwards. Try folding the paper so that the crease dips down toward the table. Make sure the edges line up neatly!",
+        "question_for_user": "Okay, did you make the valley fold so it dips down? Does the crease look like a valley now?",
         "session_finished": false,
         "summary": null
     }

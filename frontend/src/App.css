@@ -6,13 +6,18 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f4f7f6;
+  background-color: #f0f4f8; /* Lighter, softer background */
   color: #333;
+  line-height: 1.6;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+  background-color: #e2e8f0; /* Light background for code */
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
 }
 
 /* App Layout */
@@ -24,219 +29,349 @@ code {
 }
 
 .App-header {
-  background-color: #61dafb; /* React Blue */
-  padding: 20px;
+  /* background-color: #61dafb; */ /* Old React Blue */
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); /* New Gradient */
+  padding: 25px 20px;
   color: white;
-  margin-bottom: 30px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .App-header h1 {
-    margin: 0;
-    font-size: 1.8em;
+    margin: 0 0 5px 0; /* Added bottom margin */
+    font-size: 2.2em; /* Slightly larger */
+    font-weight: 600;
 }
+.App-header p { /* Style for subtitle */
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 300;
+}
+
 
 .App-main {
   flex-grow: 1;
   padding: 20px;
-  max-width: 800px;
+  max-width: 750px; /* Slightly narrower */
   margin: 0 auto; /* Center content */
   width: 90%; /* Responsive width */
 }
 
 .App-footer {
-  padding: 15px;
-  margin-top: 30px;
-  font-size: 0.8em;
-  color: #666;
-  border-top: 1px solid #eee;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 0.9em;
+  color: #555; /* Slightly darker grey */
+  border-top: 1px solid #e2e8f0; /* Lighter border */
+  background-color: #ffffff; /* White background for footer */
 }
 
 /* Common Elements */
 button {
-  background-color: #61dafb;
+  /* background-color: #61dafb; */ /* Old React Blue */
+  background-color: #00c6ff; /* Brighter Blue */
   border: none;
   color: white;
-  padding: 10px 20px;
+  padding: 12px 25px; /* Slightly larger padding */
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
-  border-radius: 5px;
+  font-size: 1em; /* Relative font size */
+  font-weight: 500; /* Medium weight */
+  border-radius: 8px; /* More rounded corners */
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin: 5px;
+  transition: background-color 0.3s ease, transform 0.1s ease; /* Added transform transition */
+  margin: 10px 5px; /* Increased margin */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-button:hover {
-  background-color: #4fa8d1;
+button:hover:not(:disabled) { /* Added :not(:disabled) */
+  /* background-color: #4fa8d1; */ /* Old Hover */
+  background-color: #00a8e0; /* Darker shade of new blue */
+  transform: translateY(-1px); /* Subtle lift effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background-color: #b0bec5; /* More distinct disabled color */
+  color: #78909c;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 input[type="text"],
 textarea,
 select {
-  width: 95%;
-  padding: 10px;
+  width: 100%; /* Use 100% width */
+  padding: 12px; /* Increased padding */
   margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #cbd5e0; /* Softer border color */
+  border-radius: 6px; /* Slightly more rounded */
   font-size: 1em;
+  box-sizing: border-box; /* Include padding in width */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #4facfe; /* Highlight focus with gradient start color */
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2); /* Subtle focus ring */
+    outline: none; /* Remove default outline */
+}
+
+
 textarea {
-    min-height: 80px;
+    min-height: 100px; /* Increased min-height */
     resize: vertical;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 8px; /* Increased spacing */
+  font-weight: 600; /* Bolder labels */
+  color: #2d3748; /* Darker label color */
   text-align: left;
+  font-size: 0.95em;
 }
 
-/* Form Specific */
-.form-component {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+/* Form Specific Styling */
+.learning-form {
+    background-color: #ffffff;
+    padding: 30px 40px; /* More padding */
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.learning-form h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #1a202c; /* Very dark grey / black */
+    font-size: 1.6em;
+    text-align: center;
 }
 
 .form-group {
-  margin-bottom: 20px;
-  text-align: left;
+    margin-bottom: 25px; /* Increased spacing between groups */
 }
 
-.form-group label {
-    margin-bottom: 8px;
+/* Styling for Radio Buttons and Checkboxes */
+.checkbox-group, .radio-group {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 15px; /* Space between items */
+    padding-top: 5px;
 }
 
-.radio-group label,
-.checkbox-group label {
-    font-weight: normal;
-    margin-right: 15px;
-    display: inline-block; /* Align radio/checkbox with label */
+.checkbox-label, .radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 400; /* Normal weight for options */
+    color: #4a5568; /* Medium grey */
+    background-color: #f7fafc; /* Very light grey background */
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.radio-group input[type="radio"],
-.checkbox-group input[type="checkbox"] {
-    margin-right: 5px;
-    vertical-align: middle; /* Align checkbox/radio vertically */
+.checkbox-label input[type="checkbox"],
+.radio-label input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #4facfe; /* Use theme color for check/radio */
+}
+
+.checkbox-label:hover, .radio-label:hover {
+    background-color: #e2e8f0; /* Slightly darker on hover */
+    border-color: #cbd5e0;
+}
+
+/* Style for selected radio/checkbox label (optional but nice) */
+.checkbox-label input[type="checkbox"]:checked + span, /* If you wrap text in span */
+.radio-label input[type="radio"]:checked {
+   /* You might need to adjust label structure slightly if you want to style the text itself */
+   /* For now, the accent-color on the input is the main indicator */
+}
+.radio-label input[type="radio"]:checked + span { /* Example if text is in span */
+    /* font-weight: 600; */
 }
 
 
-/* Path Selection */
-.path-selection-component h2,
-.interaction-component h2,
-.results-component h2 {
-    margin-bottom: 20px;
-    color: #333;
+.submit-button { /* Specific class for the main submit button */
+    width: auto; /* Don't force full width */
+    min-width: 200px; /* Minimum width */
+    padding: 15px 30px; /* Larger padding */
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 15px; /* More space above button */
 }
+
+/* Path Selection Component Styling */
+.path-selection-component {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.path-selection-component h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1a202c;
+}
+.path-selection-component p {
+    margin-bottom: 25px;
+    color: #4a5568;
+}
+
 
 .path-options {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid; /* Use grid for layout */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
+    gap: 20px; /* Gap between cards */
 }
 
 .path-option {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  text-align: left;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    background-color: #f7fafc; /* Light background */
+    text-align: left;
 }
 
 .path-option:hover {
-  border-color: #61dafb;
-  box-shadow: 0 2px 5px rgba(97, 218, 251, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-color: #4facfe; /* Highlight border on hover */
 }
 
 .path-option h3 {
-  margin-top: 0;
-  margin-bottom: 5px;
-  color: #007bff; /* Link-like color */
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #007bff; /* Blue title */
+    font-size: 1.2em;
 }
 
 .path-option p {
-  margin-bottom: 5px;
-  font-size: 0.9em;
-  color: #555;
+    font-size: 0.95em;
+    color: #4a5568; /* Medium grey text */
+    margin-bottom: 15px; /* Space before duration */
 }
 
-.path-option span {
-    font-size: 0.8em;
-    color: #777;
+.path-option span { /* Duration styling */
     display: block;
-    margin-top: 8px;
+    font-size: 0.85em;
+    color: #718096; /* Lighter grey */
+    text-align: right;
+    font-weight: 500;
 }
 
-/* Interaction */
-.interaction-component {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  text-align: left;
+
+/* Interaction Component Styling */
+.interaction-container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    text-align: left;
 }
 
-.interaction-material {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  padding: 15px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  white-space: pre-wrap; /* Preserve whitespace and wrap text */
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; /* Monospace for code-like material */
+.material-section, .question-section, .answer-section {
+    margin-bottom: 25px;
 }
 
-.interaction-question {
-  font-weight: bold;
-  margin-bottom: 15px;
-  color: #333;
+.interaction-container h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #2b6cb0; /* Darker blue for section titles */
+    border-bottom: 2px solid #e2e8f0; /* Underline */
+    padding-bottom: 5px;
 }
 
-/* Results */
+.interaction-container p {
+    line-height: 1.7; /* Slightly more line spacing for readability */
+    color: #2d3748;
+}
+
+.interaction-container textarea {
+    min-height: 120px; /* Taller textarea */
+}
+
+/* Results Component Styling */
 .results-component {
-    background-color: #e6ffed; /* Light green background */
-    border: 1px solid #b7e4c7;
-    padding: 25px;
-    border-radius: 8px;
-    color: #1d3557;
+    background-color: #ffffff;
+    padding: 40px; /* Generous padding */
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
 }
 
 .results-component h2 {
-    color: #40916c; /* Darker green */
+    color: #2f855a; /* Green for success/completion */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em;
 }
 
 .results-summary {
-    margin-top: 15px;
-    margin-bottom: 25px;
-    font-size: 1.1em;
-    line-height: 1.6;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f0fff4; /* Very light green background */
+    border-left: 4px solid #38a169; /* Green accent border */
+    border-radius: 4px;
+    text-align: left;
+    color: #2f855a; /* Dark green text */
+}
+.results-summary p {
+    margin: 0;
+    line-height: 1.7;
 }
 
 
-/* Loading and Error */
+/* Loading and Error States */
+.loading-indicator, .error-message {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
 .loading-indicator {
-  color: #007bff;
-  font-style: italic;
-  padding: 10px;
+    background-color: #e6fffa; /* Light teal */
+    color: #2c7a7b; /* Dark teal */
+    border: 1px solid #b2f5ea; /* Teal border */
 }
 
 .error-message {
-  color: #dc3545; /* Bootstrap danger color */
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  padding: 10px 15px;
-  border-radius: 5px;
-  margin-bottom: 20px;
+    background-color: #fed7d7; /* Light red */
+    color: #c53030; /* Dark red */
+    border: 1px solid #feb2b2; /* Red border */
+}
+
+/* Loading Overlay (Optional, if used) */
+.loading-overlay {
+    position: absolute; /* Or fixed, depending on desired scope */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    color: #333;
+    z-index: 10; /* Ensure it's on top */
+    border-radius: 12px; /* Match container */
 }
