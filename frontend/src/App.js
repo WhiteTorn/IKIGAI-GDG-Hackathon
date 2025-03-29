@@ -14,8 +14,9 @@ function App() {
   const [error, setError] = useState('');
   const [learningPaths, setLearningPaths] = useState([]);
   const [interactionData, setInteractionData] = useState(null); // { material, question_for_user, session_finished, summary }
-  const [finalSummary, setFinalSummary] = useState('');
+  const [finalSummary, setFinalSummary] = useState(null); // Holds the structured summary object when session finishes
   const [formDataForRetry, setFormDataForRetry] = useState(null); // Store form data if needed for retry/restart
+  const [chosenPathName, setChosenPathName] = useState(''); // Store the name of the chosen path
 
   // --- API Call Functions ---
 
@@ -50,14 +51,14 @@ function App() {
       if (data.status !== 'success') {
         throw new Error(data.message || 'API request failed');
       }
+      setIsLoading(false);
       return data; // Return the payload part of the response
 
     } catch (err) {
       console.error("API Call Error:", err);
       setError(err.message || 'An unexpected error occurred.');
-      return null; // Indicate failure
-    } finally {
       setIsLoading(false);
+      return null; // Indicate failure
     }
   }, []); // No dependencies needed for useCallback here
 
@@ -77,9 +78,11 @@ function App() {
   }, [handleApiCall, error]);
 
   const handlePathSelection = useCallback(async (pathName) => {
+    setChosenPathName(pathName); // Store the chosen path name
     const data = await handleApiCall('/start_quiz', 'POST', { chosen_path_name: pathName });
     if (data && data.interaction) {
       setInteractionData(data.interaction);
+      setFinalSummary(null); // Clear any previous summary
       setCurrentStep('interaction');
     }
   }, [handleApiCall]);
@@ -89,12 +92,35 @@ function App() {
     if (data && data.interaction) {
       setInteractionData(data.interaction); // Update interaction state (might contain summary)
       if (data.interaction.session_finished) {
-        setFinalSummary(data.interaction.summary || 'Session finished.');
+        // Store the structured summary object
+        setFinalSummary(data.interaction.summary || { recap: 'Session finished.', motivation: 'Well done!' }); // Provide default if summary is null/missing
         setCurrentStep('results');
+      } else {
+        // If session continues, clear any lingering summary and stay in interaction
+        setFinalSummary(null);
+        setCurrentStep('interaction'); // Explicitly stay here
       }
-      // If session_finished is false, we'd stay in 'interaction' step
-      // but for MVP, it always finishes here.
     }
+  }, [handleApiCall]);
+
+  // --- NEW: Handler for Continuing Learning ---
+  const handleContinueLearning = useCallback(async () => {
+      // Send a special signal to the backend instead of a user answer
+      const data = await handleApiCall('/submit_answer', 'POST', { answer: "SYSTEM_CONTINUE_SIGNAL" });
+      if (data && data.interaction) {
+          // Expecting the backend to return the *next* interaction step
+          if (!data.interaction.session_finished) {
+              setInteractionData(data.interaction);
+              setFinalSummary(null); // Clear summary
+              setCurrentStep('interaction'); // Go back to interaction screen
+          } else {
+              // Should not happen if backend logic is correct, but handle defensively
+              console.error("Backend returned session_finished after continue signal.");
+              setFinalSummary(data.interaction.summary || { recap: 'Session ended unexpectedly.', motivation: 'Keep trying!' });
+              setCurrentStep('results');
+          }
+      }
+      // Error is handled by handleApiCall
   }, [handleApiCall]);
 
   const handleRestart = () => {
@@ -104,7 +130,8 @@ function App() {
       setError('');
       setLearningPaths([]);
       setInteractionData(null);
-      setFinalSummary('');
+      setFinalSummary(null);
+      setChosenPathName(''); // Clear chosen path name
       // Optionally clear formDataForRetry or keep it to pre-fill form
       // setFormDataForRetry(null);
   };
@@ -121,7 +148,13 @@ function App() {
       case 'interaction':
         return <InteractionComponent interactionData={interactionData} onSubmitAnswer={handleInteractionSubmit} isLoading={isLoading} />;
       case 'results':
-        return <ResultsComponent summary={finalSummary} onRestart={handleRestart} />;
+        return <ResultsComponent
+                    summary={finalSummary}
+                    topicName={chosenPathName}
+                    onRestart={handleRestart}
+                    onContinue={handleContinueLearning}
+                    isLoading={isLoading}
+                />;
       default:
         return <p>Invalid step.</p>;
     }

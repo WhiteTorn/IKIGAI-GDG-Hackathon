@@ -304,7 +304,7 @@ def start_quiz():
 
 @app.route('/api/submit_answer', methods=['POST'])
 def submit_answer():
-    """Agent 2 - Part 2b: Processes user answer and provides feedback/next step."""
+    """Agent 2 - Part 2b: Processes user answer and provides feedback/next step OR summary."""
     try:
         data = request.get_json()
         user_answer = data.get('answer')
@@ -318,11 +318,39 @@ def submit_answer():
         current_interaction = memory.get('current_interaction')
 
         if not all([analysis, chosen_path, current_interaction]):
+            # If context is missing, maybe allow starting over? For now, error.
             return jsonify({"status": "error", "message": "Session context not found. Please start over."}), 404
 
         # --- Updated Prompt Construction ---
-        # Construct prompt for feedback/next step, asking the AI to decide continuation
-        prompt = f"""
+        # Check if the user explicitly wants to continue after a summary screen
+        if user_answer == "SYSTEM_CONTINUE_SIGNAL":
+            # If user wants to continue, force generation of the next step
+            prompt = f"""
+            The user previously reached a session summary point for the path "{chosen_path}" but wants to continue learning on the SAME path.
+            Generate the NEXT logical learning item (material and question) based on their profile and the path.
+
+            User Profile Analysis:
+            {json.dumps(analysis, indent=2)}
+
+            Chosen Learning Path: "{chosen_path}"
+
+            Last Interaction (before summary):
+            Material Presented: {current_interaction.get('material', 'N/A')}
+            Question Asked: {current_interaction.get('question_for_user', 'N/A')}
+
+            Task: Generate the next step. Keep material concise and question engaging.
+
+            Output ONLY the required valid JSON object:
+            {{
+              "material": "...",
+              "question_for_user": "...",
+              "session_finished": false,
+              "summary": null
+            }}
+            """
+        else:
+            # Original logic: AI decides whether to continue or finish/summarize
+            prompt = f"""
 You are an AI Tutor assessing a user's answer during a learning session.
 
 User Profile Analysis:
@@ -338,57 +366,81 @@ User's Latest Answer: "{user_answer}"
 
 Task:
 1. Analyze the user's answer based on the previous question, their profile (level: {analysis.get('level')}), and the overall goal ('{analysis.get('goal')}').
-2. Decide if the session should continue with the next logical step in the "{chosen_path}" path OR if the session should end (e.g., the path's objective for this short session is met, the user seems stuck, or the user indicates wanting to stop).
+2. Decide if the session should continue with the next logical step in the "{chosen_path}" path OR if the session should end (e.g., the path's objective for this short session is met, user seems stuck, user indicates wanting to stop).
 3. Generate a JSON response based on your decision:
-   - If CONTINUING: Set 'session_finished' to false. Provide the NEXT piece of 'material' (concise text, code example, concept based on the path) and the NEXT 'question_for_user' to check understanding or guide further. Set 'summary' to null.
-   - If ENDING: Set 'session_finished' to true. Set 'material' and 'question_for_user' to null. Provide a 'summary' (string) that briefly recaps what the user learned or practiced in this session and suggests what they could focus on next time related to their main goal.
+   - If CONTINUING: Set 'session_finished' to false. Provide the NEXT piece of 'material' and 'question_for_user'. Set 'summary' to null.
+   - If ENDING: Set 'session_finished' to true. Set 'material' and 'question_for_user' to null. Provide a 'summary' which MUST be a JSON object containing:
+     - recap: (string) Brief summary of what the user practiced/learned in this interaction block.
+     - strengths: (string) Positive feedback or areas where the user did well.
+     - areas_for_improvement: (string) Gentle suggestions on what to focus on next or areas that need more practice.
+     - next_step_suggestion: (string) A suggestion for what the user could learn or do next time related to their main goal.
+     - motivation: (string) A brief encouraging or motivational closing remark.
 
 Output ONLY the required valid JSON object adhering to this structure:
 {{
   "material": "..." or null,
   "question_for_user": "..." or null,
   "session_finished": boolean,
-  "summary": "..." or null
+  "summary": {{ "recap": "...", "strengths": "...", "areas_for_improvement": "...", "next_step_suggestion": "...", "motivation": "..." }} or null
 }}
 """
         # --- End Updated Prompt Construction ---
 
-        ai_response_str = call_gemini_api(prompt) # Use the actual API call result
+        ai_response_str = call_gemini_api(prompt)
 
         # --- Handling the AI Response ---
         try:
-            next_step_dict = json.loads(ai_response_str) # Parse the JSON string from AI
-             # Check if the AI returned an error structure itself (as defined in call_gemini_api error handling)
+            next_step_dict = json.loads(ai_response_str)
             if isinstance(next_step_dict, dict) and next_step_dict.get("status") == "error":
                  print(f"AI API returned an error: {next_step_dict.get('message')}")
                  return jsonify({"status": "error", "message": next_step_dict.get('message', 'AI processing error')}), 500
-            # Basic validation for the expected structure (can be expanded)
-            if not all(k in next_step_dict for k in ["material", "question_for_user", "session_finished", "summary"]):
-                 print(f"AI response missing required keys. Raw response: {ai_response_str}")
-                 # Fallback or error - For MVP, let's return an error
-                 return jsonify({"status": "error", "message": "AI response structure incorrect."}), 500
 
-        except json.JSONDecodeError:
-            print(f"Error decoding AI JSON response for answer submission. Raw response: {ai_response_str}")
-            return jsonify({"status": "error", "message": "Failed to parse AI response (submit_answer)."}), 500
+            # Validate base structure
+            if not all(k in next_step_dict for k in ["material", "question_for_user", "session_finished", "summary"]):
+                 raise ValueError("AI response missing base keys.")
+
+            # Validate summary structure IF session is finished
+            if next_step_dict.get('session_finished') and next_step_dict.get('summary'):
+                 summary_obj = next_step_dict['summary']
+                 if not isinstance(summary_obj, dict) or not all(k in summary_obj for k in ["recap", "strengths", "areas_for_improvement", "next_step_suggestion", "motivation"]):
+                     # If structure is wrong, maybe try to salvage the text or default? For MVP, error might be okay.
+                     print(f"Warning: AI finished session but summary structure is incorrect. Raw summary: {summary_obj}")
+                     # Fallback: Convert whatever summary we got into a simple string recap
+                     next_step_dict['summary'] = {
+                         "recap": str(summary_obj),
+                         "strengths": "N/A",
+                         "areas_for_improvement": "N/A",
+                         "next_step_suggestion": "N/A",
+                         "motivation": "Keep learning!"
+                     }
+                     # raise ValueError("AI response summary structure incorrect when session finished.")
+
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"Error decoding/validating AI JSON response for answer submission. Error: {e}. Raw response: {ai_response_str}")
+            return jsonify({"status": "error", "message": f"Failed to parse or validate AI response ({type(e).__name__})."}), 500
         # --- End Handling the AI Response ---
 
         # Update memory
-        memory = read_memory() # Re-read in case of concurrent requests (less likely here, but good practice)
-        memory['current_interaction'] = next_step_dict # Update interaction state with the full response
-        if next_step_dict.get('session_finished'):
-            # Only store the summary if the session is marked as finished by the AI
-            memory['final_summary'] = next_step_dict.get('summary')
-            # Optionally clear current_interaction if finished, or keep it for review
-            # memory['current_interaction'] = None # Example: Clear if desired
-        else:
-             # Ensure final_summary is not carried over from a previous finished session in memory
+        memory = read_memory()
+        # Store the *current* interaction state (which might be the summary screen info)
+        memory['current_interaction'] = next_step_dict
+        # Store chosen path and analysis if they aren't already there (should be, but safe)
+        if 'analysis' not in memory: memory['analysis'] = analysis
+        if 'chosen_path' not in memory: memory['chosen_path'] = chosen_path
+
+        # Clear specific 'final_summary' field if session is continuing
+        if not next_step_dict.get('session_finished'):
              if 'final_summary' in memory:
-                 del memory['final_summary']
+                 del memory['final_summary'] # Old field, potentially remove later
+        else:
+            # Store the structured summary separately if finished (optional, as it's in current_interaction)
+            memory['final_summary'] = next_step_dict.get('summary')
+
 
         write_memory(memory)
 
         # Return the full interaction object to the frontend
+        # The frontend will decide based on 'session_finished' whether to show interaction or results
         return jsonify({"status": "success", "interaction": next_step_dict})
 
     except json.JSONDecodeError:
@@ -396,7 +448,8 @@ Output ONLY the required valid JSON object adhering to this structure:
         return jsonify({"status": "error", "message": "Invalid JSON data received in request."}), 400
     except Exception as e:
         print(f"Error in /api/submit_answer: {e}")
-        # Add traceback for debugging if needed: import traceback; traceback.print_exc()
+        import traceback
+        traceback.print_exc() # Print stack trace for debugging
         return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
 
 # --- Initialization and Run ---
