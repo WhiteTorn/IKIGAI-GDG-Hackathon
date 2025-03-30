@@ -2,43 +2,66 @@ import os
 import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from dotenv import load_dotenv
 
 # TODO: Uncomment and configure when integrating real Gemini API
 import google.generativeai as genai
 
-# Load environment variables from .env file
-load_dotenv()
-
-app = Flask(__name__) # app = Flask(__name__, static_folder='frontend_build', static_url_path='')
+# --- Flask App Setup ---
+# Configure static folder correctly to serve React build
+app = Flask(__name__, static_folder='frontend_build', static_url_path='')
 CORS(app)  # Enable CORS for all routes
 
-MEMORY_FILE = "memory.json"
+# --- Firestore Client Initialization ---
+# Initialize Firestore client globally
+# It will automatically use credentials from the environment in Cloud Run
+try:
+    from google.cloud import firestore
+    db = firestore.Client()
+    print("Firestore client initialized successfully.")
+except Exception as e:
+    print(f"!!! CRITICAL ERROR: Failed to initialize Firestore client: {e}")
+    # In a real app, you might want to prevent the app from starting
+    # or have fallback behavior if Firestore isn't critical for *all* routes.
+    db = None # Set db to None so subsequent checks fail gracefully
 
-# --- Helper Functions ---
+# --- Firestore Helper Functions (Replace file helpers) ---
+
+# Define Firestore collection name
+SESSION_COLLECTION = "user_sessions"
+# For MVP, using a fixed document ID. In a real app, use user/session ID.
+SESSION_DOC_ID = "default_user_session"
 
 def read_memory():
-    """Reads data from the memory file."""
+    """Reads session data from Firestore."""
+    if not db:
+        print("Error: Firestore client not initialized.")
+        return {} # Return empty dict if Firestore failed to init
     try:
-        if os.path.exists(MEMORY_FILE):
-            with open(MEMORY_FILE, 'r') as f:
-                content = f.read()
-                if not content:
-                    return {} # Return empty dict if file is empty
-                return json.loads(content)
+        doc_ref = db.collection(SESSION_COLLECTION).document(SESSION_DOC_ID)
+        doc = doc_ref.get()
+        if doc.exists:
+            return doc.to_dict()
         else:
-            return {} # Return empty dict if file doesn't exist
-    except (IOError, json.JSONDecodeError) as e:
-        print(f"Error reading memory file: {e}")
+            print(f"Firestore document {SESSION_DOC_ID} not found, returning empty state.")
+            return {} # Return empty dict if document doesn't exist
+    except Exception as e:
+        print(f"Error reading Firestore document ({SESSION_DOC_ID}): {e}")
+        # Consider more specific error handling based on exception type
         return {} # Return empty dict on error
 
 def write_memory(data):
-    """Writes data to the memory file."""
+    """Writes session data to Firestore."""
+    if not db:
+        print("Error: Firestore client not initialized. Cannot write memory.")
+        return # Don't attempt write if Firestore failed to init
     try:
-        with open(MEMORY_FILE, 'w') as f:
-            json.dump(data, f, indent=4)
-    except IOError as e:
-        print(f"Error writing memory file: {e}")
+        doc_ref = db.collection(SESSION_COLLECTION).document(SESSION_DOC_ID)
+        # Use set() with merge=True to create or update the document
+        doc_ref.set(data, merge=True)
+        # print(f"Firestore document {SESSION_DOC_ID} written successfully.") # Optional: debug log
+    except Exception as e:
+        print(f"Error writing Firestore document ({SESSION_DOC_ID}): {e}")
+        # Consider raising the error or specific handling
 
 # --- AI Simulation ---
 
@@ -54,18 +77,16 @@ def call_gemini_api(prompt):
     ### START AI API CALL PLACEHOLDER ###
     # TODO: Integrate Google Gemini API here
     try:
-        # 1. Configure the API key (ideally loaded securely)
-        api_key = "AIzaSyAXjhxNabbFpclHXc6FAnBBcESt0fo5LbU"
+        # 1. Configure the API key (Load from environment variable)
+        api_key = os.environ.get("GEMINI_API_KEY") # <-- Read from environment
         if not api_key:
-            print("Error: GEMINI_API_KEY not found in environment variables.")
-            # Handle error appropriately, maybe return a default error JSON
-            # Return JSON string directly, as the caller expects a string
-            return json.dumps({"status": "error", "message": "API key not configured"})
+            print("CRITICAL Error: GEMINI_API_KEY environment variable not found.")
+            # Return error JSON string
+            return json.dumps({"status": "error", "message": "API key not configured in environment"})
         genai.configure(api_key=api_key)
 
-        # 2. Create a GenerativeModel instance
-        # Using gemini-1.5-flash-latest as requested
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        # 2. Create a GenerativeModel instance (Use a known valid model)
+        model = genai.GenerativeModel('gemini-1.5-flash-latest') # <-- Use known valid model
 
         # 3. Generate content
         response = model.generate_content(prompt)
@@ -469,12 +490,15 @@ Output ONLY the required valid JSON object adhering to this structure:
         traceback.print_exc() # Print stack trace for debugging
         return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
 
-# --- Initialization and Run ---
-
-if __name__ == '__main__':
-    # Ensure memory file exists
-    if not os.path.exists(MEMORY_FILE):
-        write_memory({}) # Create an empty JSON file if it doesn't exist
-
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host='0.0.0.0', port=port, debug=True) # Debug=True for development
+# --- Catch-all route for SPA (React Frontend) ---
+# This MUST come AFTER your API routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react_app(path):
+    """Serves the React app's index.html for any non-API route."""
+    # Check if the path likely refers to a static file first
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return app.send_static_file(path)
+    else:
+        # Otherwise, serve the main index.html for client-side routing
+        return app.send_static_file('index.html')
