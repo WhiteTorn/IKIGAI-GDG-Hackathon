@@ -2,139 +2,109 @@ import os
 import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
-# TODO: Uncomment and configure when integrating real Gemini API
+from dotenv import load_dotenv
 import google.generativeai as genai
+from google.cloud import firestore
 
-# --- Flask App Setup ---
-# Configure static folder correctly to serve React build
-app = Flask(__name__, static_folder='../frontend_build', static_url_path='')
-CORS(app)  # Enable CORS for all routes
+# Load environment variables from .env file
+load_dotenv()
 
 # --- Firestore Client Initialization ---
-# Initialize Firestore client globally
-# It will automatically use credentials from the environment in Cloud Run
+# Use Application Default Credentials (ADC) which Cloud Run provides automatically.
+# For local development, ensure you've run `gcloud auth application-default login`
+# or set the GOOGLE_APPLICATION_CREDENTIALS environment variable.
 try:
-    from google.cloud import firestore
     db = firestore.Client()
-    print("Firestore client initialized successfully.")
+    # For this MVP, we'll use a fixed document ID. In a real app, this
+    # would likely be tied to a user ID or session ID.
+    SESSION_COLLECTION = "user_sessions" # Name of the Firestore collection
+    SESSION_DOC_ID = "default_user_session" # Fixed document ID for MVP
 except Exception as e:
-    print(f"!!! CRITICAL ERROR: Failed to initialize Firestore client: {e}")
-    # In a real app, you might want to prevent the app from starting
-    # or have fallback behavior if Firestore isn't critical for *all* routes.
-    db = None # Set db to None so subsequent checks fail gracefully
+    print(f"FATAL: Failed to initialize Firestore client: {e}")
+    print("Ensure Application Default Credentials (ADC) are set up or GOOGLE_APPLICATION_CREDENTIALS env var points to a valid service account key.")
+    # Depending on requirements, you might exit or handle this differently.
+    # For now, the app might fail later if 'db' is None.
+    db = None
 
-# --- Firestore Helper Functions (Replace file helpers) ---
+app = Flask(__name__, static_folder='frontend_build', static_url_path='')
+CORS(app)  # Enable CORS for all routes
 
-# Define Firestore collection name
-SESSION_COLLECTION = "user_sessions"
-# For MVP, using a fixed document ID. In a real app, use user/session ID.
-SESSION_DOC_ID = "default_user_session"
+# MEMORY_FILE = "memory.json" # <-- No longer needed
+
+# --- Helper Functions (Updated for Firestore) ---
 
 def read_memory():
-    """Reads session data from Firestore."""
+    """Reads session data from a Firestore document."""
     if not db:
         print("Error: Firestore client not initialized.")
-        return {} # Return empty dict if Firestore failed to init
+        return {}
     try:
         doc_ref = db.collection(SESSION_COLLECTION).document(SESSION_DOC_ID)
         doc = doc_ref.get()
         if doc.exists:
             return doc.to_dict()
         else:
-            print(f"Firestore document {SESSION_DOC_ID} not found, returning empty state.")
+            print(f"Firestore document '{SESSION_DOC_ID}' not found in collection '{SESSION_COLLECTION}'. Returning empty state.")
             return {} # Return empty dict if document doesn't exist
     except Exception as e:
-        print(f"Error reading Firestore document ({SESSION_DOC_ID}): {e}")
-        # Consider more specific error handling based on exception type
+        print(f"Error reading memory from Firestore: {e}")
         return {} # Return empty dict on error
 
 def write_memory(data):
-    """Writes session data to Firestore."""
+    """Writes session data to a Firestore document."""
     if not db:
         print("Error: Firestore client not initialized. Cannot write memory.")
-        return # Don't attempt write if Firestore failed to init
+        return
     try:
         doc_ref = db.collection(SESSION_COLLECTION).document(SESSION_DOC_ID)
-        # Use set() with merge=True to create or update the document
+        # Use set with merge=True to create or update the document
+        # without overwriting fields not present in the 'data' dict.
         doc_ref.set(data, merge=True)
-        # print(f"Firestore document {SESSION_DOC_ID} written successfully.") # Optional: debug log
     except Exception as e:
-        print(f"Error writing Firestore document ({SESSION_DOC_ID}): {e}")
-        # Consider raising the error or specific handling
+        print(f"Error writing memory to Firestore: {e}")
 
-# --- AI Simulation ---
+# --- AI Simulation (Keep API Key handling from previous step) ---
 
 def call_gemini_api(prompt):
     """
-    Calls the actual Google Gemini API.
-    Replace this with actual API calls when ready.
+    Calls the actual Google Gemini API using API key from environment variable.
     """
     print("\n--- Calling Real Gemini API ---")
     print(f"PROMPT:\n{prompt}")
     print("------------------------------\n")
 
-    ### START AI API CALL PLACEHOLDER ###
-    # TODO: Integrate Google Gemini API here
     try:
-        # 1. Configure the API key (Load from environment variable)
-        api_key = os.environ.get("GEMINI_API_KEY") # <-- Read from environment
+        # 1. Configure the API key (Load securely from environment)
+        api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
-            print("CRITICAL Error: GEMINI_API_KEY environment variable not found.")
-            # Return error JSON string
-            return json.dumps({"status": "error", "message": "API key not configured in environment"})
+            print("Error: GEMINI_API_KEY not found in environment variables.")
+            return json.dumps({"status": "error", "message": "API key not configured"})
         genai.configure(api_key=api_key)
 
-        # 2. Create a GenerativeModel instance (Use a known valid model)
-        model = genai.GenerativeModel('gemini-1.5-flash-latest') # <-- Use known valid model
+        # 2. Create a GenerativeModel instance
+        # Consider 'gemini-1.5-flash-latest' or 'gemini-1.5-pro-latest'
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         # 3. Generate content
         response = model.generate_content(prompt)
 
-        # --- Response Cleaning (Crucial!) ---
-        # Remove potential markdown backticks and 'json' identifier
+        # --- Response Cleaning ---
         cleaned_text = response.text.strip()
         if cleaned_text.startswith('```json'):
-            cleaned_text = cleaned_text[7:].strip() # Remove ```json and surrounding whitespace
-        elif cleaned_text.startswith('```'): # Handle case where it might just start with ```
+            cleaned_text = cleaned_text[7:].strip()
+        elif cleaned_text.startswith('```'):
              cleaned_text = cleaned_text[3:].strip()
         if cleaned_text.endswith('```'):
-            cleaned_text = cleaned_text[:-3].strip() # Remove ``` and surrounding whitespace
+            cleaned_text = cleaned_text[:-3].strip()
 
-        # Assuming the response contains the JSON string directly in response.text
-        # You might need to adjust parsing based on the actual Gemini response structure
-        # Return the cleaned string, let the endpoint handle JSON parsing
         print(f"RAW AI RESPONSE (Cleaned):\n{cleaned_text}")
         return cleaned_text
 
     except Exception as e:
         print(f"Error calling Gemini API: {e}")
-        # Return an error JSON string that the calling function can parse
         return json.dumps({"status": "error", "message": f"AI API call failed: {e}"})
 
-    # --- Simulation Logic (REMOVE THIS BLOCK WHEN INTEGRATING REAL API) ---
-    # simulated_response_json_string = "{}" # Default empty JSON
-    #
-    # if "Analyze the input" in prompt:
-    #     # Simulate response for /api/analyze_form
-    #     # ... (simulation code removed) ...
-    # elif "generate exactly 3 learning paths" in prompt:
-    #     # Simulate response for /api/get_learning_paths
-    #     # ... (simulation code removed) ...
-    # elif "VERY FIRST learning item" in prompt:
-    #      # Simulate response for /api/start_quiz
-    #     # ... (simulation code removed) ...
-    # elif "Analyze the user's answer" in prompt:
-    #     # Simulate response for /api/submit_answer (always ends session for MVP)
-    #     # ... (simulation code removed) ...
-    # --- End Simulation Logic ---
-
-    ### END AI API CALL PLACEHOLDER ###
-
-    # print(f"SIMULATED RESPONSE:\n{simulated_response_json_string}")
-    # return simulated_response_json_string
-
-# --- API Endpoints ---
+# --- API Endpoints (No changes needed inside endpoints, they use read/write_memory) ---
 
 @app.route('/api/analyze_form', methods=['POST'])
 def analyze_form():
@@ -173,7 +143,7 @@ def analyze_form():
 
 
         # --- Construct the analysis object ---
-        # This is the object that will be stored in memory
+        # This is the object that will be stored in memory (Firestore)
         analysis = {
             "learning_goal": goal,
             "familiarity_level": familiarity,
@@ -185,22 +155,21 @@ def analyze_form():
         }
 
         # --- AI Call (Optional for this step, but could be used for deeper analysis) ---
-        # For the MVP, we might just store the structured data directly.
-        # If you wanted AI analysis *of* the form itself:
-        # prompt = f"Analyze this user profile for learning: {json.dumps(analysis, indent=2)}"
-        # ai_analysis_summary = call_gemini_api(prompt)
-        # analysis['ai_summary'] = ai_analysis_summary # Add AI's take
+        # ... (optional AI call logic remains the same) ...
 
-        # --- Store analysis in memory ---
-        memory = read_memory()
-        memory['analysis'] = analysis
-        # Clear previous path/interaction if starting fresh
-        memory.pop('chosen_path', None)
-        memory.pop('current_interaction', None)
-        memory.pop('final_summary', None)
-        write_memory(memory)
+        # --- Store analysis in memory (Firestore) ---
+        # Prepare the data to write: only the analysis, clearing old state.
+        # Firestore's set(merge=True) handles overwriting/creating fields.
+        # We want to ensure old path/interaction data is explicitly removed.
+        memory_to_write = {
+            'analysis': analysis,
+            'chosen_path': firestore.DELETE_FIELD, # Explicitly delete old fields
+            'current_interaction': firestore.DELETE_FIELD,
+            'final_summary': firestore.DELETE_FIELD
+        }
+        write_memory(memory_to_write) # This now writes to Firestore
 
-        print("Analysis stored:", analysis) # Debugging: Print stored analysis
+        print("Analysis stored in Firestore:", analysis) # Debugging
 
         return jsonify({"status": "success", "message": "Form analyzed successfully."})
 
@@ -216,7 +185,7 @@ def analyze_form():
 def get_learning_paths():
     """Agent 2 - Part 1: Generates learning paths based on analysis."""
     try:
-        memory = read_memory()
+        memory = read_memory() # Reads from Firestore now
         analysis = memory.get('analysis')
 
         if not analysis:
@@ -229,45 +198,40 @@ def get_learning_paths():
         User Profile Analysis:
         {json.dumps(analysis, indent=2)}
 
-        Focus on the user's goal: "{analysis.get('goal')}" and level: "{analysis.get('level')}".
+        Focus on the user's goal: "{analysis.get('learning_goal')}" and level: "{analysis.get('familiarity_level')}". # Corrected keys
         Consider preferred styles: {', '.join(analysis.get('preferred_styles', []))}.
-        If a specific focus exists ({analysis.get('specific_focus')}), incorporate it into at least one path.
+        If a specific focus exists ({analysis.get('specific_focus_notes')}), incorporate it into at least one path. # Corrected key
 
-        Output a JSON array where each element is an object with these keys:
+        Output ONLY a valid JSON array where each element is an object with these keys:
         - name: A short, descriptive name for the path (e.g., "Core Concepts Review", "Practical Example Task").
         - duration: An estimated duration string (e.g., "Approx. 15 mins").
         - overview: A brief (1-2 sentence) overview of what the path covers.
         """
 
-        simulated_response_str = call_gemini_api(prompt)
-        # --- EDIT: Added error check for API call failure ---
+        ai_response_str = call_gemini_api(prompt)
+        # --- Error check for API call failure ---
         try:
-            path_list = json.loads(simulated_response_str) # Parse the JSON string from AI
-            # Check if the AI returned an error structure itself (less likely for a list, but good practice)
+            path_list = json.loads(ai_response_str) # Parse the JSON string from AI
             if isinstance(path_list, dict) and path_list.get("status") == "error":
                  print(f"AI API returned an error: {path_list.get('message')}")
                  return jsonify({"status": "error", "message": path_list.get('message', 'AI processing error')}), 500
-            # Basic validation that we got a list
             if not isinstance(path_list, list):
-                print(f"AI response for paths was not a list. Raw response: {simulated_response_str}")
-                raise json.JSONDecodeError("AI response was not a list", simulated_response_str, 0)
+                print(f"AI response for paths was not a list. Raw response: {ai_response_str}")
+                raise json.JSONDecodeError("AI response was not a list", ai_response_str, 0)
 
         except json.JSONDecodeError:
-             # This might happen if the simulated response is malformed OR if the real AI response isn't valid JSON
-            print(f"Error decoding AI JSON response for paths. Raw response: {simulated_response_str}")
+            print(f"Error decoding AI JSON response for paths. Raw response: {ai_response_str}")
             return jsonify({"status": "error", "message": "Failed to parse AI response (get_learning_paths)."}), 500
-        # --- End EDIT ---
+        # --- End Error check ---
 
-        # No need to store paths in memory for this simple MVP flow
+        # No need to store paths in memory (Firestore) for this simple MVP flow
 
         return jsonify({"status": "success", "paths": path_list})
 
-    except json.JSONDecodeError:
-         # This might happen if the simulated response is malformed
-        print(f"Error decoding simulated JSON for paths.")
-        return jsonify({"status": "error", "message": "Error generating learning paths."}), 500
     except Exception as e:
         print(f"Error in /api/get_learning_paths: {e}")
+        import traceback
+        traceback.print_exc() # Print stack trace for debugging
         return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
 
 @app.route('/api/start_quiz', methods=['POST'])
@@ -280,14 +244,14 @@ def start_quiz():
         if not chosen_path_name:
             return jsonify({"status": "error", "message": "No path name provided."}), 400
 
-        memory = read_memory()
+        memory = read_memory() # Reads from Firestore
         analysis = memory.get('analysis')
 
         if not analysis:
             return jsonify({"status": "error", "message": "User analysis not found. Please submit the form first."}), 404
 
-        memory['chosen_path'] = chosen_path_name
-        write_memory(memory)
+        # Store chosen path in Firestore before making AI call
+        write_memory({'chosen_path': chosen_path_name})
 
         # Construct prompt for the first interaction item
         prompt = f"""
@@ -304,40 +268,50 @@ def start_quiz():
 
         Chosen Learning Path: "{chosen_path_name}"
 
-        Keep questions engaging, suitable for the user's level ({analysis.get('level')}).
+        Keep questions engaging, suitable for the user's level ({analysis.get('familiarity_level')}). # Corrected key
         The goal is to start the learning process based on the chosen path.
 
-        Output a JSON object with the following keys:
+        Output ONLY a valid JSON object with the following keys:
         - material: A string containing the initial learning material (text, explanation, concept).
         - question_for_user: A string containing a question for the user to answer based on the material.
         - session_finished: A boolean, set to false for this initial step.
+        - summary: null # Explicitly null for the first step
         """
 
-        simulated_response_str = call_gemini_api(prompt)
-        # --- EDIT: Added error check for API call failure ---
+        ai_response_str = call_gemini_api(prompt)
+        # --- Error check for API call failure ---
         try:
-            interaction_dict = json.loads(simulated_response_str) # Parse the JSON string from AI
-            # Check if the AI returned an error structure itself
+            interaction_dict = json.loads(ai_response_str) # Parse the JSON string from AI
             if isinstance(interaction_dict, dict) and interaction_dict.get("status") == "error":
                  print(f"AI API returned an error: {interaction_dict.get('message')}")
                  return jsonify({"status": "error", "message": interaction_dict.get('message', 'AI processing error')}), 500
-        except json.JSONDecodeError:
-            print(f"Error decoding AI JSON response for quiz start. Raw response: {simulated_response_str}")
-            return jsonify({"status": "error", "message": "Failed to parse AI response (start_quiz)."}), 500
-        # --- End EDIT ---
+            # Basic validation
+            if not all(k in interaction_dict for k in ["material", "question_for_user", "session_finished", "summary"]):
+                 raise ValueError("AI response missing required keys for interaction.")
+            if interaction_dict.get("session_finished") is not False:
+                 print("Warning: AI set session_finished to true on the very first step. Forcing false.")
+                 interaction_dict["session_finished"] = False # Ensure first step isn't finished
+            if interaction_dict.get("summary") is not None:
+                 print("Warning: AI provided a summary on the very first step. Forcing null.")
+                 interaction_dict["summary"] = None # Ensure first step has no summary
 
-        # Store the current interaction state
-        memory = read_memory() # Re-read
-        memory['current_interaction'] = interaction_dict
-        write_memory(memory)
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"Error decoding/validating AI JSON response for quiz start. Error: {e}. Raw response: {ai_response_str}")
+            return jsonify({"status": "error", "message": f"Failed to parse or validate AI response ({type(e).__name__})."}), 500
+        # --- End Error check ---
+
+        # Store the current interaction state in Firestore
+        memory_to_write = {'current_interaction': interaction_dict}
+        write_memory(memory_to_write) # Writes to Firestore
 
         return jsonify({"status": "success", "interaction": interaction_dict})
 
     except json.JSONDecodeError:
-        print(f"Error decoding simulated JSON for quiz start.")
-        return jsonify({"status": "error", "message": "Error starting interaction."}), 500
+        return jsonify({"status": "error", "message": "Invalid JSON data received in request."}), 400
     except Exception as e:
         print(f"Error in /api/start_quiz: {e}")
+        import traceback
+        traceback.print_exc() # Print stack trace for debugging
         return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
 
 @app.route('/api/submit_answer', methods=['POST'])
@@ -350,19 +324,16 @@ def submit_answer():
         if user_answer is None: # Allow empty string answers, but not missing key
             return jsonify({"status": "error", "message": "No answer provided."}), 400
 
-        memory = read_memory()
+        memory = read_memory() # Reads from Firestore
         analysis = memory.get('analysis')
         chosen_path = memory.get('chosen_path')
         current_interaction = memory.get('current_interaction')
 
         if not all([analysis, chosen_path, current_interaction]):
-            # If context is missing, maybe allow starting over? For now, error.
             return jsonify({"status": "error", "message": "Session context not found. Please start over."}), 404
 
         # --- Updated Prompt Construction ---
-        # Check if the user explicitly wants to continue after a summary screen
         if user_answer == "SYSTEM_CONTINUE_SIGNAL":
-            # If user wants to continue, force generation of the next step
             prompt = f"""
             The user previously reached a session summary point for the path "{chosen_path}" but wants to continue learning on the SAME path.
             Generate the NEXT logical learning item (material and question) based on their profile and the path.
@@ -387,7 +358,6 @@ def submit_answer():
             }}
             """
         else:
-            # Original logic: AI decides whether to continue or finish/summarize
             prompt = f"""
 You are an AI Tutor assessing a user's answer during a learning session.
 
@@ -403,7 +373,7 @@ Question Asked: {current_interaction.get('question_for_user', 'N/A')}
 User's Latest Answer: "{user_answer}"
 
 Task:
-1. Analyze the user's answer based on the previous question, their profile (level: {analysis.get('level')}), and the overall goal ('{analysis.get('goal')}').
+1. Analyze the user's answer based on the previous question, their profile (level: {analysis.get('familiarity_level')}), and the overall goal ('{analysis.get('learning_goal')}'). # Corrected keys
 2. Decide if the session should continue with the next logical step in the "{chosen_path}" path OR if the session should end (e.g., the path's objective for this short session is met, user seems stuck, user indicates wanting to stop).
 3. Generate a JSON response based on your decision:
    - If CONTINUING: Set 'session_finished' to false. Provide the NEXT piece of 'material' and 'question_for_user'. Set 'summary' to null.
@@ -441,7 +411,6 @@ Output ONLY the required valid JSON object adhering to this structure:
             if next_step_dict.get('session_finished') and next_step_dict.get('summary'):
                  summary_obj = next_step_dict['summary']
                  if not isinstance(summary_obj, dict) or not all(k in summary_obj for k in ["recap", "strengths", "areas_for_improvement", "next_step_suggestion", "motivation"]):
-                     # If structure is wrong, maybe try to salvage the text or default? For MVP, error might be okay.
                      print(f"Warning: AI finished session but summary structure is incorrect. Raw summary: {summary_obj}")
                      # Fallback: Convert whatever summary we got into a simple string recap
                      next_step_dict['summary'] = {
@@ -451,38 +420,27 @@ Output ONLY the required valid JSON object adhering to this structure:
                          "next_step_suggestion": "N/A",
                          "motivation": "Keep learning!"
                      }
-                     # raise ValueError("AI response summary structure incorrect when session finished.")
 
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Error decoding/validating AI JSON response for answer submission. Error: {e}. Raw response: {ai_response_str}")
             return jsonify({"status": "error", "message": f"Failed to parse or validate AI response ({type(e).__name__})."}), 500
         # --- End Handling the AI Response ---
 
-        # Update memory
-        memory = read_memory()
-        # Store the *current* interaction state (which might be the summary screen info)
-        memory['current_interaction'] = next_step_dict
-        # Store chosen path and analysis if they aren't already there (should be, but safe)
-        if 'analysis' not in memory: memory['analysis'] = analysis
-        if 'chosen_path' not in memory: memory['chosen_path'] = chosen_path
-
-        # Clear specific 'final_summary' field if session is continuing
-        if not next_step_dict.get('session_finished'):
-             if 'final_summary' in memory:
-                 del memory['final_summary'] # Old field, potentially remove later
+        # Update memory (Firestore)
+        memory_to_write = {'current_interaction': next_step_dict}
+        # Store the structured summary separately if finished (optional, but can be useful)
+        if next_step_dict.get('session_finished'):
+            memory_to_write['final_summary'] = next_step_dict.get('summary')
         else:
-            # Store the structured summary separately if finished (optional, as it's in current_interaction)
-            memory['final_summary'] = next_step_dict.get('summary')
+            # Ensure final_summary field is removed if session is continuing
+             memory_to_write['final_summary'] = firestore.DELETE_FIELD
 
-
-        write_memory(memory)
+        write_memory(memory_to_write) # Writes to Firestore
 
         # Return the full interaction object to the frontend
-        # The frontend will decide based on 'session_finished' whether to show interaction or results
         return jsonify({"status": "success", "interaction": next_step_dict})
 
     except json.JSONDecodeError:
-        # This catches errors if the initial request.get_json() fails
         return jsonify({"status": "error", "message": "Invalid JSON data received in request."}), 400
     except Exception as e:
         print(f"Error in /api/submit_answer: {e}")
@@ -490,16 +448,28 @@ Output ONLY the required valid JSON object adhering to this structure:
         traceback.print_exc() # Print stack trace for debugging
         return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
 
-# Add a catch-all route to serve index.html for client-side routing
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+    """Serves the React app's index.html for any non-API path."""
+    static_folder = app.static_folder # Should be 'frontend_build'
+    index_path = os.path.join(static_folder, 'index.html')
+    if path != "" and os.path.exists(os.path.join(static_folder, path)):
         return app.send_static_file(path)
-    else:
-        # Send index.html from the root of the static folder
+    elif os.path.exists(index_path):
         return app.send_static_file('index.html')
+    else:
+        return "Frontend not found!", 404
+
+# --- Initialization and Run ---
 
 if __name__ == '__main__':
-    # This is only used for local development, not by Gunicorn/Cloud Run
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+    # No need to create local memory file anymore
+    # if not os.path.exists(MEMORY_FILE):
+    #     write_memory({})
+
+    port = int(os.environ.get("PORT", 8080))
+    # Debug=True is fine for local development run via `python app.py`
+    # Gunicorn in Dockerfile will handle production settings (debug=False implicitly)
+    print("Starting Flask app locally for development (use Gunicorn in production/Docker)")
+    app.run(host='0.0.0.0', port=port, debug=True)
