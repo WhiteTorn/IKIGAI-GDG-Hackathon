@@ -8,7 +8,7 @@ import google.generativeai as genai
 
 # --- Flask App Setup ---
 # Configure static folder correctly to serve React build
-app = Flask(__name__, static_folder='frontend_build', static_url_path='')
+app = Flask(__name__, static_folder='../frontend_build', static_url_path='')
 CORS(app)  # Enable CORS for all routes
 
 # --- Firestore Client Initialization ---
@@ -490,15 +490,16 @@ Output ONLY the required valid JSON object adhering to this structure:
         traceback.print_exc() # Print stack trace for debugging
         return jsonify({"status": "error", "message": "An internal server error occurred."}), 500
 
-# --- Catch-all route for SPA (React Frontend) ---
-# This MUST come AFTER your API routes
+# Add a catch-all route to serve index.html for client-side routing
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_react_app(path):
-    """Serves the React app's index.html for any non-API route."""
-    # Check if the path likely refers to a static file first
+def serve(path):
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return app.send_static_file(path)
     else:
-        # Otherwise, serve the main index.html for client-side routing
+        # Send index.html from the root of the static folder
         return app.send_static_file('index.html')
+
+if __name__ == '__main__':
+    # This is only used for local development, not by Gunicorn/Cloud Run
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
