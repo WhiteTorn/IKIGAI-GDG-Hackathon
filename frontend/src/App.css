@@ -47,8 +47,7 @@ code {
 }
 
 .logo-cyan {
-    /* color: #00f2fe; */ /* Cyan */
-    color: #19d9ff; /* Updated Cyan/Blue */
+    color: #00f2fe; /* Cyan */
 }
 
 
@@ -71,8 +70,8 @@ code {
 
 /* Common Elements */
 button {
-  /* background-color: #00c6ff; */ /* Brighter Blue */
-  background-color: #16C3E6; /* Updated Cyan/Blue */
+  /* background-color: #61dafb; */ /* Old React Blue */
+  background-color: #00c6ff; /* Brighter Blue */
   border: none;
   color: white;
   padding: 12px 25px; /* Slightly larger padding */
@@ -89,8 +88,8 @@ button {
 }
 
 button:hover:not(:disabled) { /* Added :not(:disabled) */
-  /* background-color: #00a8e0; */ /* Darker shade of new blue */
-  background-color: #13A9C9; /* Darker shade of updated color */
+  /* background-color: #4fa8d1; */ /* Old Hover */
+  background-color: #00a8e0; /* Darker shade of new blue */
   transform: translateY(-1px); /* Subtle lift effect */
   /* Keep potential hover shadow if desired, or remove */
   /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); */
@@ -125,8 +124,7 @@ input[type="text"]:focus,
 textarea:focus,
 select:focus {
     /* Change bottom border color and thickness on focus */
-    /* border-bottom-color: #00c6ff; */ /* Use theme cyan */
-    border-bottom-color: #16C3E6; /* Updated Cyan/Blue */
+    border-bottom-color: #00c6ff; /* Use theme cyan */
     border-bottom-width: 2px;
     outline: none; /* Remove default outline */
     box-shadow: none; /* Ensure no shadow */
@@ -140,8 +138,7 @@ textarea {
     border-radius: 6px; /* Keep radius for textarea */
 }
 textarea:focus {
-    /* border-color: #00c6ff; */ /* Highlight border on focus */
-    border-color: #16C3E6; /* Updated Cyan/Blue */
+    border-color: #00c6ff; /* Highlight border on focus */
     border-bottom-width: 1px; /* Reset bottom width if using full border */
 }
 
@@ -357,17 +354,14 @@ input[type="radio"]:checked + label {
 }
 /* Style label when checked */
 .modern-choice input:checked + span {
-  background-color: #e6fffa; /* Keep Light teal background for contrast */
-  /* border-color: #00c6ff; */ /* Cyan border */
-  border-color: #16C3E6; /* Updated Cyan/Blue */
-  /* color: #2c7a7b; */ /* Keep Darker teal text for contrast */
-  color: #13A9C9; /* Use darker shade for text on light bg */
+  background-color: #e6fffa; /* Light cyan/teal background */
+  border-color: #00c6ff; /* Cyan border */
+  color: #2c7a7b; /* Darker teal text */
   font-weight: 600; /* Bolder text when selected */
 }
 /* Focus style for keyboard navigation */
 .modern-choice input:focus-visible + span {
-    /* outline: 2px solid #00c6ff; */
-    outline: 2px solid #16C3E6; /* Updated Cyan/Blue */
+    outline: 2px solid #00c6ff;
     outline-offset: 2px;
 }
 
@@ -383,10 +377,8 @@ input[type="radio"]:checked + label {
     border-radius: 25px; /* More rounded button */
 }
 .submit-button:hover:not(:disabled) {
-    /* box-shadow: 0 4px 12px rgba(0, 198, 255, 0.2); */ /* Subtle cyan glow on hover */
-    box-shadow: 0 4px 12px rgba(22, 195, 230, 0.2); /* Updated glow color */
-    /* background-color: #00a8e0; */
-    background-color: #13A9C9; /* Darker shade of updated color */
+    box-shadow: 0 4px 12px rgba(0, 198, 255, 0.2); /* Subtle cyan glow on hover */
+    background-color: #00a8e0;
     transform: translateY(-2px); /* Slightly more lift */
 }
 
@@ -397,9 +389,7 @@ input[type="radio"]:checked + label {
     padding: 30px 40px;
     border-radius: 12px;
     /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); */ /* Optional: Remove shadow here too? */
-    /* border: 1px solid #ccc; */ /* Remove less refined border */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06); /* Use subtle shadow consistent with form */
-    border: 1px solid #e2e8f0; /* Keep a light border for definition */
+    border: 1px solid #ccc; /* Example border if shadow removed */
     margin-bottom: 30px;
 }
 
@@ -428,27 +418,21 @@ input[type="radio"]:checked + label {
     border-radius: 8px;
     padding: 20px;
     cursor: pointer;
-    /* Add background-color to transition */
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     background-color: #f7fafc; /* Light background */
     text-align: left;
 }
 
 .path-option:hover {
-    transform: translateY(-4px); /* Slightly more lift */
-    /* Increase shadow slightly */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.09);
-    /* Use primary theme color for border highlight */
-    /* border-color: #00c6ff; */
-    border-color: #16C3E6; /* Updated Cyan/Blue */
-    background-color: #ffffff; /* Change background to white on hover */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-color: #4facfe; /* Highlight border on hover */
 }
 
 .path-option h3 {
     margin-top: 0;
     margin-bottom: 10px;
-    /* color: #00c6ff; */ /* Use primary cyan */
-    color: #16C3E6; /* Updated Cyan/Blue */
+    color: #007bff; /* Blue title */
     font-size: 1.2em;
 }
 
@@ -470,66 +454,33 @@ input[type="radio"]:checked + label {
 /* Interaction Component Styling */
 .interaction-container {
     background-color: #ffffff;
-    padding: 35px 45px; /* Slightly increase padding */
-    border-radius: 16px; /* Match form rounding */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07); /* Slightly softer shadow */
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
     text-align: left;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
-.material-section, .question-section { /* Removed .answer-section as it's not used */
-    margin-bottom: 30px; /* Increase spacing between sections */
+.material-section, .question-section, .answer-section {
+    margin-bottom: 25px;
 }
 
 .interaction-container h3 {
     margin-top: 0;
-    margin-bottom: 15px; /* Increased space below heading */
-    color: #4a5568; /* Use medium grey for less harsh contrast */
-    border-bottom: 1px solid #e2e8f0; /* Thinner border */
-    padding-bottom: 8px; /* Adjust padding for thinner border */
-    font-size: 1.3em; /* Slightly larger heading */
-    font-weight: 600; /* Bolder heading */
+    margin-bottom: 10px;
+    color: #2b6cb0; /* Darker blue for section titles */
+    border-bottom: 2px solid #e2e8f0; /* Underline */
+    padding-bottom: 5px;
 }
 
 .interaction-container p {
-    line-height: 1.7;
+    line-height: 1.7; /* Slightly more line spacing for readability */
     color: #2d3748;
-    margin-bottom: 1em; /* Ensure paragraphs have bottom margin */
 }
 
 .interaction-container textarea {
-    min-height: 120px;
-    /* Inherits modern base textarea styles (full border, theme focus) */
-    margin-top: 5px; /* Add a little space below the question paragraph */
+    min-height: 120px; /* Taller textarea */
 }
-
-/* Refined style for the submit answer button */
-.submit-answer-button {
-    background-color: transparent;
-    /* border: 1px solid black; */ /* Change border from black */
-    border: 1px solid #13A9C9; /* Use darker theme color for border */
-    /* color: black; */ /* Change text color from black */
-    color: #13A9C9; /* Use darker theme color for text */
-    padding: 10px 22px; /* Adjust padding slightly */
-    margin-top: 15px;
-    display: inline-block; /* Changed from block to inline-block */
-    width: auto; /* Ensure width fits content */
-    border-radius: 20px; /* Make it pill-shaped like radio buttons */
-    font-weight: 500; /* Match base button weight */
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
-}
-.submit-answer-button:hover:not(:disabled) {
-    background-color: #16C3E6; /* Keep theme cyan/blue for hover background */
-    border-color: #16C3E6;     /* Match background color on hover */
-    color: white;              /* White text on hover */
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(22, 195, 230, 0.25); /* Slightly stronger theme shadow */
-}
-/* Disabled state is handled by base button:disabled */
-
 
 /* Results Component Styling */
 .results-component {
@@ -654,8 +605,7 @@ input[type="radio"]:checked + label {
 .summary-section h4 {
     margin-top: 0;
     margin-bottom: 12px; /* More space below title */
-    /* color: #2b6cb0; */ /* Theme blue for titles */
-    color: #13A9C9; /* Use darker shade for titles */
+    color: #2b6cb0; /* Theme blue for titles */
     font-size: 1.2em; /* Slightly larger title */
     font-weight: 600;
     display: flex; /* Align emoji and text */
@@ -713,16 +663,12 @@ input[type="radio"]:checked + label {
 }
 
 .restart-button {
-   /* background-color: #4299e1; */ /* Blue for explore */
-   background-color: #16C3E6; /* Updated Cyan/Blue */
-   /* border: 1px solid #3182ce; */
-   border: 1px solid #13A9C9; /* Use darker shade for border */
+   background-color: #4299e1; /* Blue for explore */
+   border: 1px solid #3182ce;
 }
 .restart-button:hover:not(:disabled) {
-   /* background-color: #3182ce; */
-   background-color: #13A9C9; /* Darker shade */
-   /* box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3); */ /* Blue shadow */
-   box-shadow: 0 4px 10px rgba(22, 195, 230, 0.3); /* Updated shadow color */
+   background-color: #3182ce;
+    box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3); /* Blue shadow */
 }
 
 
@@ -730,11 +676,3 @@ input[type="radio"]:checked + label {
 /*
 .results-summary { ... }
 */
-
-/* Base button styles might need adjustment if old CSS had different base */
-/* Reviewing base button styles - current ones seem fine */
-
-/* Remove specific button styles from old CSS if not used elsewhere */
-/* .submit-button { ... } */ /* This class is used elsewhere, keep its current style */
-/* .continue-button { ... } */ /* This class is used elsewhere, keep its current style */
-/* .restart-button { ... } */ /* This class is used elsewhere, keep its current style */

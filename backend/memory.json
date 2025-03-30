@@ -1,33 +1,15 @@
 {
     "analysis": {
-        "learning_goal": "DSLfkjeklsj",
-        "familiarity_level": "Beginner",
+        "learning_goal": "SKDJflksejf",
+        "familiarity_level": "Intermediate",
         "preferred_styles": [
-            "Auditory"
+            "Auditory",
+            "Kinesthetic (Hands-on)",
+            "Visual"
         ],
-        "time_available_per_session": "Medium (15-30 mins)",
-        "specific_focus_notes": "SDfer",
-        "immediate_achievement_goal": "SKDLFjseklrj",
-        "desired_session_scope": "Quick Overview"
-    },
-    "chosen_path": "Essential Terminology: An Audio Glossary",
-    "current_interaction": {
-        "material": null,
-        "question_for_user": null,
-        "session_finished": true,
-        "summary": {
-            "recap": "We started exploring the concept of an algorithm by trying to break down a simple task into steps. While we didn't quite get to listing the steps for brushing teeth, the goal was to understand how everyday activities can be described as a sequence of instructions.",
-            "strengths": "You were willing to engage with the example provided, which is a great first step in understanding new concepts!",
-            "areas_for_improvement": "Thinking about algorithms involves breaking down tasks into very small, specific steps. Try to be as detailed as possible when describing each action.",
-            "next_step_suggestion": "Next time, let's try breaking down another simple task, like making a sandwich, into its individual steps to further solidify your understanding of algorithms.",
-            "motivation": "Keep practicing! Breaking down problems into smaller steps is a valuable skill in many areas of life."
-        }
-    },
-    "final_summary": {
-        "recap": "We started exploring the concept of an algorithm by trying to break down a simple task into steps. While we didn't quite get to listing the steps for brushing teeth, the goal was to understand how everyday activities can be described as a sequence of instructions.",
-        "strengths": "You were willing to engage with the example provided, which is a great first step in understanding new concepts!",
-        "areas_for_improvement": "Thinking about algorithms involves breaking down tasks into very small, specific steps. Try to be as detailed as possible when describing each action.",
-        "next_step_suggestion": "Next time, let's try breaking down another simple task, like making a sandwich, into its individual steps to further solidify your understanding of algorithms.",
-        "motivation": "Keep practicing! Breaking down problems into smaller steps is a valuable skill in many areas of life."
+        "time_available_per_session": "Quick (5-15 mins)",
+        "specific_focus_notes": "DKfsjldf",
+        "immediate_achievement_goal": "KLSDJFlkd",
+        "desired_session_scope": "Deep Dive"
     }
 }
