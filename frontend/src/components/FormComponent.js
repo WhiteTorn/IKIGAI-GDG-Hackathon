@@ -61,7 +61,7 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
 
   return (
     <form onSubmit={handleSubmit} className="learning-form">
-      <h3 style={{ marginBottom: '2rem'}}>Tell Us About Your Learning Goals</h3>
+      <h2>Tell Us About Your Learning Goals</h2>
 
       <div className="form-group">
         <label htmlFor="goal">What topic do you want to learn or practice today? *</label>
@@ -88,39 +88,33 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
       </div>
 
       <div className="form-group">
-        <label>How familiar are you with this topic? *</label>
-        <div className="radio-group">
-            {familiarityOptions.map(option => (
-              <label key={option} className="modern-choice">
-                <input
-                  type="radio"
-                  name="familiarity"
-                  value={option}
-                  checked={familiarity === option}
-                  onChange={(e) => setFamiliarity(e.target.value)}
-                  required
-                />
-                <span>{option}</span>
-              </label>
-            ))}
-        </div>
+        <label htmlFor="familiarity">How familiar are you with this topic? *</label>
+        {familiarityOptions.map(option => (
+          <label key={option}>
+            <input
+              type="radio"
+              name="familiarity"
+              value={option}
+              checked={familiarity === option}
+              onChange={(e) => setFamiliarity(e.target.value)}
+              required
+            /> {option}
+          </label>
+        ))}
       </div>
 
       <div className="form-group">
         <label>Preferred Learning Style(s) * (Choose at least one)</label>
-        <div className="checkbox-group">
-            {learningStylesOptions.map(style => (
-              <label key={style} className="modern-choice">
-                <input
-                  type="checkbox"
-                  value={style}
-                  checked={styles.includes(style)}
-                  onChange={handleStyleChange}
-                />
-                <span>{style}</span>
-              </label>
-            ))}
-        </div>
+        {learningStylesOptions.map(style => (
+          <label key={style}>
+            <input
+              type="checkbox"
+              value={style}
+              checked={styles.includes(style)}
+              onChange={handleStyleChange}
+            /> {style}
+          </label>
+        ))}
       </div>
 
       <div className="form-group">
@@ -142,7 +136,7 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
        <div className="form-group">
         <label>How deep do you want to go right now? *</label>
         <div className="radio-group">
-            <label className="modern-choice">
+            <label className="radio-label">
                 <input
                     type="radio"
                     name="sessionScope"
@@ -150,10 +144,9 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
                     checked={sessionScope === 'Quick Overview'}
                     onChange={(e) => setSessionScope(e.target.value)}
                     required
-                />
-                <span>Quick Overview</span>
+                /> Quick Overview
             </label>
-            <label className="modern-choice">
+            <label className="radio-label">
                 <input
                     type="radio"
                     name="sessionScope"
@@ -161,8 +154,7 @@ function FormComponent({ onSubmit, isLoading, initialData }) {
                     checked={sessionScope === 'Deep Dive'}
                     onChange={(e) => setSessionScope(e.target.value)}
                     required
-                />
-                <span>Deeper Dive</span>
+                /> Deeper Dive
             </label>
         </div>
        </div>

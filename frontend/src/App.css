@@ -28,26 +28,24 @@ code {
   min-height: 100vh;
 }
 
-/* Removed .App-header styles */
-
-/* New Logo Styles */
-.app-logo {
-    padding: 40px 20px 20px 20px; /* Added padding */
-    text-align: center;
+.App-header {
+  /* background-color: #61dafb; */ /* Old React Blue */
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); /* New Gradient */
+  padding: 25px 20px;
+  color: white;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.app-logo h1 {
+.App-header h1 {
+    margin: 0 0 5px 0; /* Added bottom margin */
+    font-size: 2.2em; /* Slightly larger */
+    font-weight: 600;
+}
+.App-header p { /* Style for subtitle */
     margin: 0;
-    font-size: 3em; /* Larger logo */
-    font-weight: 700;
-}
-
-.logo-dark {
-    color: #333; /* Dark Gray */
-}
-
-.logo-cyan {
-    color: #00f2fe; /* Cyan */
+    font-size: 1.1em;
+    font-weight: 300;
 }
 
 
@@ -84,15 +82,14 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease; /* Added transform transition */
   margin: 10px 5px; /* Increased margin */
-  /* Removed box-shadow from base button style */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover:not(:disabled) { /* Added :not(:disabled) */
   /* background-color: #4fa8d1; */ /* Old Hover */
   background-color: #00a8e0; /* Darker shade of new blue */
   transform: translateY(-1px); /* Subtle lift effect */
-  /* Keep potential hover shadow if desired, or remove */
-  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 button:disabled {
@@ -107,289 +104,118 @@ input[type="text"],
 textarea,
 select {
   width: 100%; /* Use 100% width */
-  padding: 12px 4px 8px 4px; /* Adjust padding (less horizontal, more bottom) */
+  padding: 12px; /* Increased padding */
   margin-bottom: 15px;
-  /* Remove default border and background */
-  border: none;
-  border-bottom: 1px solid #cbd5e0; /* Subtle bottom border */
-  background-color: transparent; /* Make background transparent */
-  border-radius: 0; /* Remove border-radius for bottom-border look */
+  border: 1px solid #cbd5e0; /* Softer border color */
+  border-radius: 6px; /* Slightly more rounded */
   font-size: 1em;
   box-sizing: border-box; /* Include padding in width */
-  transition: border-color 0.3s ease; /* Only transition border */
-  margin-top: 4px; /* Add space below label */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus,
 textarea:focus,
 select:focus {
-    /* Change bottom border color and thickness on focus */
-    border-bottom-color: #00c6ff; /* Use theme cyan */
-    border-bottom-width: 2px;
+    border-color: #4facfe; /* Highlight focus with gradient start color */
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2); /* Subtle focus ring */
     outline: none; /* Remove default outline */
-    box-shadow: none; /* Ensure no shadow */
 }
 
 
 textarea {
-    min-height: 100px;
+    min-height: 100px; /* Increased min-height */
     resize: vertical;
-    border: 1px solid #cbd5e0; /* Textarea might look better with full border */
-    border-radius: 6px; /* Keep radius for textarea */
 }
-textarea:focus {
-    border-color: #00c6ff; /* Highlight border on focus */
-    border-bottom-width: 1px; /* Reset bottom width if using full border */
-}
-
 
 label {
   display: block;
-  margin-bottom: 0px; /* Reduced bottom margin as space is added to input top */
-  font-weight: 500; /* Slightly lighter label */
-  color: #4a5568; /* Medium grey label color */
+  margin-bottom: 8px; /* Increased spacing */
+  font-weight: 600; /* Bolder labels */
+  color: #2d3748; /* Darker label color */
   text-align: left;
-  font-size: 0.9em; /* Slightly smaller label */
+  font-size: 0.95em;
 }
 
 /* Form Specific Styling */
 .learning-form {
     background-color: #ffffff;
-    padding: 40px 50px; /* Increased padding */
-    border-radius: 16px; /* More rounded corners */
-    /* Removed border, added subtle shadow */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
-    border: none; /* Explicitly remove border */
+    padding: 30px 40px; /* More padding */
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
 }
 
-.learning-form h3 { /* Changed from h2 selector */
+.learning-form h2 {
     margin-top: 0;
-    margin-bottom: 35px; /* More space below title */
-    color: #1a202c;
-    font-size: 1.8em; /* Slightly larger title */
-    font-weight: 600;
-    text-align: left;
+    margin-bottom: 25px;
+    color: #1a202c; /* Very dark grey / black */
+    font-size: 1.6em;
+    text-align: center;
 }
 
 .form-group {
-    margin-bottom: 30px; /* Increased spacing between groups */
-    position: relative; /* Needed for potential future label animations */
+    margin-bottom: 25px; /* Increased spacing between groups */
 }
 
-/* Styling for Radio Buttons and Checkboxes - MODERN LOOK */
+/* Styling for Radio Buttons and Checkboxes */
 .checkbox-group, .radio-group {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px; /* Adjust gap */
-    padding-top: 8px;
-    justify-content: flex-start;
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 15px; /* Space between items */
+    padding-top: 5px;
 }
 
-/* Hide default radio/checkbox */
-.checkbox-label input[type="checkbox"],
-.radio-label input[type="radio"] {
-    opacity: 0;
-    position: absolute;
-    width: 0;
-    height: 0;
-}
-
-/* Style the label itself */
 .checkbox-label, .radio-label {
-    display: inline-block; /* Change display */
+    display: flex;
     align-items: center;
     cursor: pointer;
-    font-weight: 500; /* Medium weight */
-    color: #4a5568;
-    background-color: #f7fafc;
-    padding: 10px 18px; /* Adjust padding */
-    border-radius: 20px; /* Pill shape */
+    font-weight: 400; /* Normal weight for options */
+    color: #4a5568; /* Medium grey */
+    background-color: #f7fafc; /* Very light grey background */
+    padding: 8px 12px;
+    border-radius: 6px;
     border: 1px solid #e2e8f0;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-    text-align: center; /* Center text in tag */
-    line-height: 1.2; /* Adjust line-height */
-    margin: 0; /* Remove default margins */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+.checkbox-label input[type="checkbox"],
+.radio-label input[type="radio"] {
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #4facfe; /* Use theme color for check/radio */
+}
 
 .checkbox-label:hover, .radio-label:hover {
-    background-color: #e2e8f0;
+    background-color: #e2e8f0; /* Slightly darker on hover */
     border-color: #cbd5e0;
 }
 
-/* Style for the selected state */
-.checkbox-label input[type="checkbox"]:checked + span, /* Assuming text is wrapped in span now */
-.radio-label input[type="radio"]:checked + span { /* Assuming text is wrapped in span now */
-   /* This requires wrapping the label text in a <span> */
-   /* See FormComponent.js update below */
-}
-
-/* Direct styling on label when input inside is checked */
-.checkbox-label input[type="checkbox"]:checked ~ span, /* If span is sibling */
-.radio-label input[type="radio"]:checked ~ span {
-    /* Styles for the span when checked */
-}
-
-/* Alternative: Style the label directly when its input is checked */
-/* This is simpler if you don't want/need to wrap text in a span */
-input[type="checkbox"]:checked + label,
-input[type="radio"]:checked + label {
-   /* This requires changing the HTML structure: input first, then label */
-   /* Let's stick to styling the parent label based on the hidden input state */
-}
-
-/* --- Let's style the label based on its contained checked input --- */
-/* We'll need JS to add a class, OR use :has() pseudo-class (limited support) */
-/* A simpler CSS-only approach is to style the label when the input *inside* it is checked */
-/* This requires the input to be visually hidden but still present */
-
-.checkbox-label input[type="checkbox"]:checked,
+/* Style for selected radio/checkbox label (optional but nice) */
+.checkbox-label input[type="checkbox"]:checked + span, /* If you wrap text in span */
 .radio-label input[type="radio"]:checked {
-    /* These are hidden, so styling them won't work directly */
+   /* You might need to adjust label structure slightly if you want to style the text itself */
+   /* For now, the accent-color on the input is the main indicator */
 }
-
-/* --- Let's style the label container itself */
-/* We'll use the adjacent sibling combinator or similar, requires HTML structure change */
-/* OR, the most common way: Style the label itself and change it when checked */
-
-/* Reverting to styling the label directly, assuming input is inside */
-.checkbox-label, .radio-label {
-    position: relative; /* To contain the absolute positioned input */
-    /* ... other styles from above ... */
-}
-
-/* Style the label when the hidden input inside it is checked */
-/* This uses a trick where the actual input is hidden, but we style the label */
-.checkbox-label input[type="checkbox"]:checked + span, /* If text is in span */
-.radio-label input[type="radio"]:checked + span {
-    /* Style the text span if used */
-}
-
-/* Let's style the label itself when the input is checked */
-/* This is the most straightforward if input is inside label */
-.checkbox-label input[type="checkbox"]:checked::before, /* Pseudo-element styling */
-.radio-label input[type="radio"]:checked::before {
-    /* Complex to make look good */
-}
-
-/* --- EASIEST APPROACH: Style the label based on the input state --- */
-/* Keep the input visually hidden but present */
-.checkbox-label input[type="checkbox"],
-.radio-label input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-/* Style the label normally */
-.checkbox-label, .radio-label {
-    /* ... styles from above ... */
-    display: inline-flex; /* Use flex */
-    align-items: center;
-    justify-content: center;
-    /* Add a small gap if you plan to add an icon later */
-    /* gap: 6px; */
-}
-
-/* Style the label when its corresponding input is checked */
-input[type="checkbox"]:checked + label, /* Requires input *before* label in HTML */
-input[type="radio"]:checked + label {
-    /* ... */
-}
-
-/* --- FINAL ATTEMPT: Keep HTML structure, style label based on contained input --- */
-/* This usually requires JS to add/remove a class on the label */
-/* Let's simulate the effect with CSS focus-within for demo, though check is better */
-
-/* Styling the label when the input *inside* it is checked */
-/* We will style the label directly and use the :checked pseudo-class on the hidden input */
-/* This requires the input to be *inside* the label tag */
-
-.checkbox-label, .radio-label {
-    /* ... base styles ... */
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-/* Style changes for the label when the input inside IS checked */
-:checked + .checkbox-label-text, /* If text is wrapped */
-:checked + .radio-label-text {
-    /* Style text */
-}
-
-/* Let's style the label container itself */
-.learning-form input[type="checkbox"]:checked + span, /* If span follows input */
-.learning-form input[type="radio"]:checked + span {
-    /* Style the span */
-}
-
-/* --- Simplest CSS-only for modern look: Style the label, change on check --- */
-/* Hide the input */
-.modern-choice input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-/* Style the label */
-.modern-choice span { /* Wrap label text in span */
-  display: inline-block;
-  padding: 10px 18px;
-  font-weight: 500;
-  color: #4a5568;
-  background-color: #f7fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px; /* Pill shape */
-  cursor: pointer;
-  transition: all 0.2s ease;
-  line-height: 1.2;
-  text-align: center;
-}
-/* Style label on hover */
-.modern-choice span:hover {
-  background-color: #eef2f7; /* Slightly different hover */
-  border-color: #cbd5e0;
-}
-/* Style label when checked */
-.modern-choice input:checked + span {
-  background-color: #e6fffa; /* Light cyan/teal background */
-  border-color: #00c6ff; /* Cyan border */
-  color: #2c7a7b; /* Darker teal text */
-  font-weight: 600; /* Bolder text when selected */
-}
-/* Focus style for keyboard navigation */
-.modern-choice input:focus-visible + span {
-    outline: 2px solid #00c6ff;
-    outline-offset: 2px;
+.radio-label input[type="radio"]:checked + span { /* Example if text is in span */
+    /* font-weight: 600; */
 }
 
 
-.submit-button {
-    width: auto;
-    min-width: 200px;
-    padding: 15px 35px; /* Slightly adjusted padding */
+.submit-button { /* Specific class for the main submit button */
+    width: auto; /* Don't force full width */
+    min-width: 200px; /* Minimum width */
+    padding: 15px 30px; /* Larger padding */
     font-size: 1.1em;
     font-weight: 600;
-    margin-top: 25px; /* More space above button */
-    box-shadow: none;
-    border-radius: 25px; /* More rounded button */
+    margin-top: 15px; /* More space above button */
 }
-.submit-button:hover:not(:disabled) {
-    box-shadow: 0 4px 12px rgba(0, 198, 255, 0.2); /* Subtle cyan glow on hover */
-    background-color: #00a8e0;
-    transform: translateY(-2px); /* Slightly more lift */
-}
-
 
 /* Path Selection Component Styling */
 .path-selection-component {
     background-color: #ffffff;
     padding: 30px 40px;
     border-radius: 12px;
-    /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); */ /* Optional: Remove shadow here too? */
-    border: 1px solid #ccc; /* Example border if shadow removed */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
 }
 
