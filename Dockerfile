@@ -40,8 +40,9 @@ COPY --from=frontend-builder /app/frontend/build ./frontend_build
 EXPOSE $PORT
 
 # Run the Flask app (ensure debug=False in app.py)
-CMD ["flask", "run", "--host=0.0.0.0", "--port=$PORT"]
+# CMD ["flask", "run", "--host=0.0.0.0", "--port=$PORT"] # Comment this out
 
-# Optional: Use Gunicorn for better performance
-# Add gunicorn to backend/requirements.txt
-# CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
+# Use Gunicorn for production
+# Make sure 'app:app' matches your Flask app instance in app.py
+# Use --timeout 0 for potentially long-running API calls (like to Gemini)
+CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "--workers", "1", "--threads", "8", "--timeout", "0", "app:app"]

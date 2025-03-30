@@ -2,3 +2,4 @@ Flask>=2.0
 python-dotenv>=0.19
 Flask-Cors>=3.0
 # google-generativeai>=0.3 # Keep commented until integration
+gunicorn>=20.1
