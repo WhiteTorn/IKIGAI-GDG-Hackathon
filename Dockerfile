@@ -6,6 +6,8 @@ WORKDIR /app/frontend
 # Copy package.json and package-lock.json first for caching
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
+# Add this line for diagnostics: Check if react-scripts exists and its permissions
+RUN ls -l node_modules/.bin/react-scripts
 
 # Copy the rest of the frontend code
 COPY frontend/ ./

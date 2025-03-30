@@ -1,0 +1,20 @@
+# Ignore node_modules folders anywhere in the project
+**/node_modules
+
+# Ignore frontend build output (it's generated inside the container)
+frontend/build
+
+# Ignore Python virtual environments if any
+**/venv
+**/.venv
+
+# Ignore Python bytecode and caches
+**/*.pyc
+**/__pycache__
+
+# Ignore general OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Git directory
+.git
