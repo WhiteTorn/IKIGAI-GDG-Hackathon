@@ -55,7 +55,7 @@ def call_gemini_api(prompt):
     # TODO: Integrate Google Gemini API here
     try:
         # 1. Configure the API key (ideally loaded securely)
-        api_key = "AIzaSyAXjhxNabbFpclHXc6FAnBBcESt0fo5LbU"
+        api_key = "INSERT YOUR API KEY HERE"
         if not api_key:
             print("Error: GEMINI_API_KEY not found in environment variables.")
             # Handle error appropriately, maybe return a default error JSON
