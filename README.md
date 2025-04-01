@@ -22,6 +22,8 @@ Backend - Python(flask)
 
 ## 🔧 Installation
 
+**DO NOT FORGET TO GET GEMINI API KEY FROM https://ai.dev**
+
 ```bash
 # Clone the repository
 git clone https://github.com/your-username/ikigai.git
