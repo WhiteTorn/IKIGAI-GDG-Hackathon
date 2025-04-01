@@ -22,7 +22,7 @@ Backend - Python(flask)
 
 ## 🖼 Screenshots
 
-
+![Main Page](images/First Page.png)
 
 ## 🔧 Installation
 
