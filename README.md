@@ -2,10 +2,14 @@
 
 ## 🚀 Project Overview
 
-
+Your Best Personal AI-Tutor
 
 ## ✨ Features
 
+- Choose ANY Topic you want to learn.
+- Choose style and temp.
+- Get practical feedback and use in real life.
+- Continue learning session any time you want.
 
 ## 🛠️ Technologies Used
 
