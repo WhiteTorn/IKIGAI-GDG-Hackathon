@@ -1,6 +1,6 @@
 # IKIGAI
 
-![Logo](images/logo.jpg)
+![Logo](images/Logo.jpg)
 
 ## 🚀 Project Overview
 
