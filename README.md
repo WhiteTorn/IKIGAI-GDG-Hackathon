@@ -2,11 +2,15 @@
 
 ## 🚀 Project Overview
 
+
+
 ## ✨ Features
 
 
 ## 🛠️ Technologies Used
 
+Frontend - React
+Backend - Python(flask)
 
 ## 📋 Prerequisites
 
