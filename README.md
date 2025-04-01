@@ -1,8 +1,12 @@
 # IKIGAI
 
+![Logo](images/logo.jpg)
+
 ## 🚀 Project Overview
 
 Your Best Personal AI-Tutor
+
+Demo on Youtube: https://youtu.be/pAvr42p8x9k
 
 ## ✨ Features
 
@@ -22,7 +26,10 @@ Backend - Python(flask)
 
 ## 🖼 Screenshots
 
-![Main Page](images/First Page.png)
+![Main Page](images/FirstPage.png)
+![Second Page](images/secondpage.png)
+![Second Page](images/thirdpage.png)
+![Second Page](images/resultspage.png)
 
 ## 🔧 Installation
 
