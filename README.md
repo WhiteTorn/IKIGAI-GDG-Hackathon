@@ -20,9 +20,13 @@ Backend - Python(flask)
 
 - python 3.10
 
+## 🖼 Screenshots
+
+
+
 ## 🔧 Installation
 
-**DO NOT FORGET TO GET GEMINI API KEY FROM https://ai.dev**
+! **DO NOT FORGET TO GET GEMINI API KEY FROM https://ai.dev**
 
 ```bash
 # Clone the repository
