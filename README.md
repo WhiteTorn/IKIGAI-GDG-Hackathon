@@ -64,5 +64,6 @@ python app.py
 ## 👥 Team
 
 - David Zoidze
-- Ani + Nini Merabishvili
+- Ani Merabishvili - https://www.linkedin.com/in/ani-merabishvili/
+- Nini Merabishvili
 - Iakob Zaqarishvili
