@@ -66,4 +66,5 @@ python app.py
 - David Zoidze
 - Ani Merabishvili - https://www.linkedin.com/in/ani-merabishvili/
 - Nini Merabishvili
+www.linkedin.com/in/nini-merabishvili/
 - Iakob Zaqarishvili
